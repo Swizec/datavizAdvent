@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
-
 const Wrapper = styled.div`
-max-width: 800px;
+  max-width: 800px;
   text-align: center;
   margin: 3rem auto;
   padding: 0 2rem;
   color: #384047;
-  
-  
+
   @media (max-width: 940px) {
-    
   }
-`;
+`
 
 const WrapperForm = styled.div`
   input {
@@ -44,12 +41,11 @@ const WrapperForm = styled.div`
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
       -webkit-box-shadow 0.15s ease-in-out;
   }
-`;
-const WrapperSubmit = styled.div`
-  input {
+  input[type='submit'] {
     background-color: red;
     text-transform: uppercase;
     padding: 1rem;
+    padding-bottom: 2rem;
     margin: 1rem 0;
     display: inline-block;
     margin-bottom: 0;
@@ -60,57 +56,53 @@ const WrapperSubmit = styled.div`
     background-image: none;
     border: none;
     font-size: 14px;
+    width: 200px;
   }
-  input:hover {
+  input[type='submit']:hover {
     background-color: gold;
   }
-`;
+`
 
 export default class DripEmail extends Component {
   render() {
     return (
       <Wrapper>
         <h3 data-drip-attribute="headline">
-        React+D3v4 sample chapter and email course
+          ReactVizHoliday - Get a new dataviz every day until Christmas
         </h3>
         <p data-drip-attribute="description">
-        Leave your email and get a free sample of React+d3.js and a mini
-        email course. They will teach you about the basic architecture of
-        React apps and show you how JSX makes your code better.
+          Leave your email and get a new dataviz idea + solution every day until
+          Christmas. Great for practice. Fun to watch. Learn new stuff 🎅
+        </p>
+        <p>
+          Every viz comes with a fun dataset, a livecode session, a solution in
+          CodeSandbox, and a writeup about how it all fits together. Perfect way
+          to take your React skills beyond the TODOapp. Looks great on your
+          portfolio. ✌️
         </p>
         <WrapperForm>
-            <form
-            action="https://www.getdrip.com/forms/5362865/submissions"
+          <form
+            action="https://www.getdrip.com/forms/468020372/submissions"
             method="post"
             target="_blank"
-            data-drip-embedded-form="5362865"
-            >
+            data-drip-embedded-form="468020372"
+          >
             <input
-                type="text"
-                placeholder="Enter your email"
-                label="Email Address"
-                name="fields[email]"
-                className="form-control"
+              type="text"
+              placeholder="Enter your email"
+              label="Email Address"
+              name="fields[email]"
+              className="form-control"
             />
-            </form>
+            <input
+              type="submit"
+              name="submit"
+              value="💌 Sign Me Up 💌"
+              data-drip-attribute="sign-up-button"
+              className="btn"
+            />
+          </form>
         </WrapperForm>
-
-        <WrapperSubmit>
-            <form
-            action="https://www.getdrip.com/forms/5362865/submissions"
-            method="post"
-            target="_blank"
-            data-drip-embedded-form="5362865"
-            >
-            <input
-                type="submit"
-                name="submit"
-                value="Sign Up"
-                data-drip-attribute="sign-up-button"
-                className="btn"
-            />
-            </form>
-        </WrapperSubmit>
       </Wrapper>
     )
   }
