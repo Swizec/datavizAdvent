@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () => (
+export default ({ date }) => (
   <React.Fragment>
     <h2>Solution coming soon ✌️</h2>
     <p>
@@ -10,7 +10,8 @@ export default () => (
       Each stream aims to stay under 1 hour, but you never know.
     </p>
     <p>
-      Check back tomorrow for a writeup. Or subscribe to get it in your inbox.
+      Check back tomorrow for a writeup. Or subscribe to get it in your inbox on{' '}
+      <strong>{date}</strong>
       👇
     </p>
   </React.Fragment>

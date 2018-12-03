@@ -67,7 +67,7 @@ class BlogPostTemplate extends React.Component {
             </React.Fragment>
           ) : null}
 
-          {!gotSandbox ? <SolutionBlock /> : null}
+          {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
 
           <div>
             <MDXRenderer scope={this.props.__mdxScope}>
