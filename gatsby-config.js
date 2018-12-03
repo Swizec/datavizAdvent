@@ -5,25 +5,9 @@ module.exports = {
         description: 'A new tiny data visualization for every day of the 2018 Advent',
         siteUrl: 'https://gatsbyjs.github.io/gatsby-starter-blog/',
     },
-<<<<<<< HEAD
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        path: `${__dirname}/posts`,
-        name: 'posts',
-      },
-    },
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [
-          {
-            resolve: `gatsby-remark-images`,
-=======
     pathPrefix: '/gatsby-starter-blog',
     plugins: [{
             resolve: `gatsby-plugin-styled-components`,
->>>>>>> b67fb2e548c215424d6dfe8feae00a114447ebe7
             options: {
                 // Add any options here
             },
