@@ -25,7 +25,7 @@ export default class index extends Component {
 
 export const query = graphql`
   {
-    allMdx(sort: { fields: [frontmatter___date], order: DESC }, limit: 1000) {
+    allMdx(sort: { fields: [frontmatter___date], order: ASC }, limit: 1000) {
       edges {
         node {
           id

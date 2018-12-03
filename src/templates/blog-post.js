@@ -13,6 +13,8 @@ import Prism from 'prismjs';
 import "../components/prism.css";
 
 
+import SolutionBlock from '../components/SolutionBlock'
+
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -44,6 +46,9 @@ class BlogPostTemplate extends React.Component {
       { mdx } = data,
       { frontmatter } = mdx
 
+    const gotVideo = frontmatter.videoId !== 'NA',
+      gotSandbox = frontmatter.codesandboxId !== 'NA'
+
     return (
       <Layout location={location}>
         <Wrapper>
@@ -57,18 +62,33 @@ class BlogPostTemplate extends React.Component {
             <h1>{frontmatter.title}</h1>
             </div>
 
+          {gotVideo ? (
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
             />
+          ) : null}
 
             <Lead>{frontmatter.intro}</Lead>
 
-            <h2>Try it out 👇</h2>
-            <Codesandbox
-              src={`https://codesandbox.io/embed/${frontmatter.codesandboxId}`}
-              class="embedded-codesandbox"
-              sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-            />
+          <Lead>
+            <strong>Dataset:</strong>{' '}
+            <a href={`/datasets/${frontmatter.dataset}`}>Download dataset 🗳 </a>
+          </Lead>
+
+          {gotSandbox ? (
+            <React.Fragment>
+              <h2>My solution 👇</h2>
+              <Codesandbox
+                src={`https://codesandbox.io/embed/${
+                  frontmatter.codesandboxId
+                }`}
+                class="embedded-codesandbox"
+                sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+              />
+            </React.Fragment>
+          ) : null}
+
+          {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
 
             <div>
               <MDXRenderer scope={this.props.__mdxScope}>
@@ -78,6 +98,9 @@ class BlogPostTemplate extends React.Component {
             <hr></hr>
             <DripEmail/>
           </div>
+
+          <DripEmail />
+
           <Footer />
         </Wrapper>
       </Layout>
@@ -105,6 +128,7 @@ export const pageQuery = graphql`
         videoId
         codesandboxId
         intro
+        dataset
       }
     }
   }
