@@ -8,6 +8,10 @@ import ReactPlayer from 'react-player'
 import styled from 'styled-components'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import DripEmail from '../components/DripEmail'
+import Prism from 'prismjs';
+import "../components/prism.css";
+
 
 
 const Wrapper = styled.div`
@@ -32,6 +36,9 @@ const Lead = styled.p`
 `
 
 class BlogPostTemplate extends React.Component {
+  componentDidMount() {
+    Prism.highlightAll();
+  }
   render() {
     const { children, data, location, ...props } = this.props,
       { mdx } = data,
@@ -68,7 +75,9 @@ class BlogPostTemplate extends React.Component {
                 {mdx.code.body}
               </MDXRenderer>
             </div>
-            </div>
+            <hr></hr>
+            <DripEmail/>
+          </div>
           <Footer />
         </Wrapper>
       </Layout>
