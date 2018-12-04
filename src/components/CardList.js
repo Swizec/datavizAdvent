@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'gatsby'
 import { graphql } from 'gatsby'
 import Img from "gatsby-image";
+import AdventLogo from '../assets/AdventLogo.png'
 
 
 import Card from './Card'
@@ -64,9 +65,44 @@ export default ({ posts }) => {
               Day {i + 1}: {node.frontmatter.title}
             </Link>
           }
+          cover={<Link to={node.fields.slug}><img src={AdventLogo} alt='logo'/></Link>}
+
           
+          key={node.id}
         />
       ))}
     </Wrapper>
   )
 }
+
+export const pageQuery = graphql`
+  query($slug: String!) {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+    mdx(fields: { slug: { eq: $slug } }) {
+      id
+      code {
+        body
+      }
+      frontmatter {
+        title
+        date(formatString: "MMMM DD, YYYY")
+        videoId
+        codesandboxId
+        intro
+        dataset
+        image {
+          publicURL
+          childImageSharp {
+            sizes(maxWidth: 1240 ) {
+              srcSet
+            }
+          }
+        }         
+      }
+    }
+  }
+`

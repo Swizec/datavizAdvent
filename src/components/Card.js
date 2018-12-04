@@ -30,12 +30,11 @@ const Wrapper = styled.div`
       position: absolute;
       top: 0;
       height: 110%;
-      z-index: -1;
   }
   h1 {
       color: #fff;
       text-align: center;
-      font-size: 35px;
+      font-size: 30px;
       padding: 0 2rem;
   }
 `
@@ -45,7 +44,7 @@ const Card = props => (
     <Wrapper>
         <div className='Card'>
             <div className='CardTop'>
-                <div>{props.image}</div>
+                {props.cover}
             </div>
             <div className='CardBottom'>
                 <h1>{props.title}</h1>
