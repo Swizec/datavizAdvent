@@ -10,24 +10,22 @@ import Footer from '../components/Footer'
 import Header from '../components/Header'
 import DripEmail from '../components/DripEmail'
 import SocialShare from '../components/SocialShare'
-import Prism from 'prismjs';
-import "../components/prism.css";
+import Prism from 'prismjs'
+import '../components/prism.css'
 
 import SolutionBlock from '../components/SolutionBlock'
-
 
 const Wrapper = styled.div`
   margin: 0 auto;
 
-.Middle {
-  max-width: 960px;
-  margin: 12rem auto;
-  padding: 0 2rem;
-}
-.HeadTop {
-  text-align: center;
-}
-  
+  .Middle {
+    max-width: 960px;
+    margin: 12rem auto;
+    padding: 0 2rem;
+  }
+  .HeadTop {
+    text-align: center;
+  }
 `
 const Codesandbox = styled.iframe`
   width: 100%;
@@ -40,7 +38,7 @@ const Lead = styled.p`
 
 class BlogPostTemplate extends React.Component {
   componentDidMount() {
-    Prism.highlightAll();
+    Prism.highlightAll()
   }
   render() {
     const { children, data, location, ...props } = this.props,
@@ -55,30 +53,34 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={location}>
         <Wrapper>
-          <Header/>
-          <div className='Middle'>
-            <div className='HeadTop'>
-            <Helmet
-              title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
-              
-
+          <Header />
+          <div className="Middle">
+            <div className="HeadTop">
+              <Helmet
+                title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
-                <meta itemprop="name" content={`${frontmatter.title}`} />
                 <meta
-                  itemprop="description"
-                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                  itemprop="name"
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
+                <meta itemprop="description" content={frontmatter.intro} />
                 <meta
                   itemprop="image"
                   content="https://reactviz.holiday/reactvizholiday.png"
                 />
 
-                <meta property="og:url" content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}/>
+                <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
-                <meta property={`${frontmatter.title} | ${data.site.siteMetadata.title}`} />
+                <meta
+                  property={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
+                  }`}
+                />
                 <meta
                   property="og:description"
-                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                  content={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
+                  }`}
                 />
                 <meta
                   property="og:image"
@@ -86,11 +88,11 @@ class BlogPostTemplate extends React.Component {
                 />
 
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${frontmatter.title}`} />
                 <meta
-                  name="twitter:description"
-                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                  name="twitter:title"
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
+                <meta name="twitter:description" content={frontmatter.intro} />
                 <meta
                   name="twitter:image"
                   content="https://reactviz.holiday/reactvizholiday.png"
@@ -108,54 +110,60 @@ class BlogPostTemplate extends React.Component {
                       s.parentNode.insertBefore(dc, s);
                   })();
                   `}</script>
-                <script async defer src="https://cdn.simpleanalytics.io/hello.js" />
+                <script
+                  async
+                  defer
+                  src="https://cdn.simpleanalytics.io/hello.js"
+                />
                 <noscript>
                   {`<img src="https://api.simpleanalytics.io/hello.gif" alt="" />`}
                 </noscript>
 
                 <html lang="en" />
               </Helmet>
-            <PostHeader postdate={frontmatter.date} />
-            <h1>{frontmatter.title}</h1>
+              <PostHeader postdate={frontmatter.date} />
+              <h1>{frontmatter.title}</h1>
             </div>
 
-          {gotVideo ? (
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
-            />
-          ) : null}
+            {gotVideo ? (
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
+              />
+            ) : null}
 
             <Lead>{frontmatter.intro}</Lead>
 
-          <Lead>
-            <strong>Dataset:</strong>{' '}
-            <a href={`/datasets/${frontmatter.dataset}`}>Download dataset 🗳 </a>
-          </Lead>
+            <Lead>
+              <strong>Dataset:</strong>{' '}
+              <a href={`/datasets/${frontmatter.dataset}`}>
+                Download dataset 🗳{' '}
+              </a>
+            </Lead>
 
-          {gotSandbox ? (
-            <React.Fragment>
-              <h2>My solution 👇</h2>
-              <Codesandbox
-                src={`https://codesandbox.io/embed/${
-                  frontmatter.codesandboxId
-                }`}
-                class="embedded-codesandbox"
-                sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-              />
-            </React.Fragment>
-          ) : null}
+            {gotSandbox ? (
+              <React.Fragment>
+                <h2>My solution 👇</h2>
+                <Codesandbox
+                  src={`https://codesandbox.io/embed/${
+                    frontmatter.codesandboxId
+                  }`}
+                  class="embedded-codesandbox"
+                  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+                />
+              </React.Fragment>
+            ) : null}
 
-          {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
+            {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
 
             <div>
+              <h2>How it works ⚙️</h2>
               <MDXRenderer scope={this.props.__mdxScope}>
                 {mdx.code.body}
               </MDXRenderer>
             </div>
-            <hr></hr>
-            <DripEmail/>
-            <SocialShare/>
-            
+            <hr />
+            <DripEmail />
+            <SocialShare />
           </div>
           <Footer />
         </Wrapper>
@@ -188,11 +196,11 @@ export const pageQuery = graphql`
         image {
           publicURL
           childImageSharp {
-            sizes(maxWidth: 1240 ) {
+            sizes(maxWidth: 1240) {
               srcSet
             }
           }
-        }         
+        }
       }
     }
   }

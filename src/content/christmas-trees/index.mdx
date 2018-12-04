@@ -1,8 +1,122 @@
 ---
 title: Christmas trees sold in USA
 date: '2018-12-03'
-videoId: NA
-codesandboxId: NA
+videoId: Blyq4m0CvxY
+codesandboxId: p9p89w86wx
 dataset: statistic_id209249_christmas-trees-sold-in-the-united-states-2004-2017.xlsx
 intro: Every year americans buy a bunch of christmas trees. Use the dataset to compare real and fake sales with two bar charts.
+image: './christmastrees.gif'
 ---
+
+Christmas trees sold in USA is an example of a simple barchart built with React and D3. More React than D3 really. 😇
+
+We used the simplified full integration approach because the data never changes. Neither do any of the other props like `width` and `height`. Means we don't have to worry about updating D3's internal state. Plopping D3 stuff into class field properties works great.
+
+We converted our dataset from xlsx into a tab separated values file. Easy copy paste job with this tiny dataset. That goes in `/public/data.tsv`.
+
+To load the dataset we use `d3.tsv` inside `componentDidMount`.
+
+```javascript
+  componentDidMount() {
+    d3.tsv("/data.tsv", ({ year, real_trees, fake_trees }) => ({
+      year: Number(year),
+      real_trees: Number(real_trees),
+      fake_trees: Number(fake_trees)
+    })).then(data => this.setState({ data }));
+  }
+```
+
+When the `<App>` component first loads, it makes a `fetch()` request for our data file. D3 parses the file as a list of tab separated values and passes each line through our data parsing function. That turns it into a nicely formatted object with real numbers.
+
+`.then` we update component state with our data.
+
+Inside the render method we use a conditional. When data is present, we render a `<Barchart>` component with a title. When there's no data, we render nothing.
+
+No need for a loading screen with a dataset this small. Loads and parses super fast. 👌
+
+### Render the emoji barchart
+
+![Switchable emoji christmas tree barchart](./christmastrees.gif)
+
+We created a `<Barchart>` component that takes:
+
+- `data`, our entire dataset
+- `value`, the key name we're displaying
+- `y`, the vertical position
+
+Final version doesn't need that vertical positioning param, but it's nice to have. You never know.
+
+The `Barchart` uses a horizontal `scaleBand` to handle each column's positioning. Scale bands are a type of ordinal scale. They automatically handle spacing, padding, and making sure our columns neatly fit into a given width.
+
+There's no height axis because we want each christmas tree emoji 🎄 to represent a million real life trees.
+
+We loop over the data and render a `TreeBar` and a `text` label for each entry.
+
+```javascript
+<g transform={`translate(0, ${y})`}>
+  {data.map(d => (
+    <React.Fragment>
+      <TreeBar x={this.xScale(d.year)} y={480} count={d[this.props.value]} />
+      <text
+        x={this.xScale(d.year)}
+        y={500}
+        style={{ strike: 'black', fontSize: '12px' }}
+        textAnchor="center"
+      >
+        {d.year}
+      </text>
+    </React.Fragment>
+  ))}
+</g>
+```
+
+A grouping element holds everything in place and creates a common coordinate system to work off of. It's like a div. We position it with a `transform=translate` and elements inside position relatively to the group.
+
+For each iteration of our `data`, we render a `<TreeBar>` and a `<text>`. Text goes at the bottom and displays the year. That's our label.
+
+`<TreeBar>` gets a horizontal position through our `xScale`, a vertical position which is static, and a `count` of how many trees 🎄 to show. We use `this.props.value` to dynamically fetch the correct part of each data object.
+
+### A &lt;TreeBar> of emojis 🎄
+
+Now here's a silly little fun part: Instead of an SVG rectangle, we build each bar from a bunch of emoji text elements.
+
+```javascript
+const TreeBar = ({ x, y, count }) => (
+  <g transform={`translate(${x}, ${y})`}>
+    {d3.range(count).map(i => (
+      <text x={0} y={-i * 12} style={{ fontSize: '20px' }}>
+        🎄
+      </text>
+    ))}
+    <text
+      x={0}
+      y={-(count + 1) * 12 - 5}
+      style={{ fontSize: '9px' }}
+      textAnchor="center"
+    >
+      {count}
+    </text>
+  </g>
+)
+```
+
+Once more we start with a grouping element. That holds everything together.
+
+Then we create a fake array with `d3.range` and iterate. For each index in the array, we return a text element positioned at a `12px` offset from the previous element, a `fontSize` of `20px`, and a christmas tree emoji for content.
+
+We found the values through experiment. Keeping emojis spaced to their full height created bars that were too hard to read. An overlap works great. Keeps the bars readable and the emojis recognizable.
+
+That final little text shows how many million trees we drew in each bar. Makes our chart easier to read than counting tres :)
+
+### What you learned 🧐
+
+Today you learned:
+
+- D3 band scales
+- D3 range for creating iteration arrays
+- using class field values for D3 objects
+- a simple full integration approach
+
+React for rendering. D3 to help calculate props.
+
+✌️
