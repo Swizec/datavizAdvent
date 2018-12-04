@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   margin: 0 auto;
   padding: 3rem 0;
-  max-width: 1200px;
+  max-width: 1300px;
 
   @media (max-width: 1100px) {
     display: grid;

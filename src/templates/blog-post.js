@@ -49,6 +49,8 @@ class BlogPostTemplate extends React.Component {
 
     const gotVideo = frontmatter.videoId !== 'NA',
       gotSandbox = frontmatter.codesandboxId !== 'NA'
+      
+    
 
     return (
       <Layout location={location}>
@@ -153,6 +155,7 @@ class BlogPostTemplate extends React.Component {
             <hr></hr>
             <DripEmail/>
             <SocialShare/>
+            
           </div>
           <Footer />
         </Wrapper>

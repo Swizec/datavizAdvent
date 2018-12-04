@@ -12,17 +12,33 @@ module.exports = {
                 // Add any options here
             },
         },
+       
+        `gatsby-plugin-sharp`,
         {
-            resolve: `gatsby-source-filesystem`,
+            resolve: `gatsby-mdx`,
             options: {
-                path: `${__dirname}/src/content`,
-                name: 'pages',
-            },
+            gatsbyRemarkPlugins: [
+            {
+                resolve: "gatsby-remark-images",
+                options: {
+                maxWidth: 1035,
+                sizeByPixelDensity: true
+                }
+            }
+            ]
+            }
+        },
+        {
+            resolve: "gatsby-source-filesystem",
+            options: {
+            path: `${__dirname}/src/content`
+            }
         },
         {
             resolve: `gatsby-transformer-remark`,
             options: {
-                plugins: [{
+                plugins: [
+                    {
                         resolve: `gatsby-remark-images`,
                         options: {
                             maxWidth: 590,
@@ -41,7 +57,7 @@ module.exports = {
             },
         },
         `gatsby-transformer-sharp`,
-        `gatsby-plugin-sharp`,
+        
 
         //`gatsby-plugin-feed`,
         {
@@ -58,6 +74,5 @@ module.exports = {
         },
         `gatsby-plugin-offline`,
         `gatsby-plugin-react-helmet`,
-        `gatsby-mdx`,
     ],
 }

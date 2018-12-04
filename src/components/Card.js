@@ -20,7 +20,9 @@ const Wrapper = styled.div`
   }
   .CardBottom {
     border-radius: 0 0 20px 20px ;
-    background-color: #04081F;
+    background-color: #420000;
+    background-image: linear-gradient(45deg, #420000 39%, #a30000 100%);
+
     width: 300px;
   height: 250px;
   position: relative;
@@ -28,8 +30,9 @@ const Wrapper = styled.div`
   }
   .Card img {
       position: absolute;
-      top: 0;
-      height: 110%;
+      background-size: cover;
+      
+      
   }
   h1 {
       color: #fff;
