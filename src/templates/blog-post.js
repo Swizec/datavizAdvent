@@ -57,24 +57,17 @@ class BlogPostTemplate extends React.Component {
               <Helmet
                 title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
-                <meta itemprop="name" content={`${frontmatter.title}`} />
                 <meta
-                  itemprop="description"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  itemprop="name"
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
+                <meta itemprop="description" content={frontmatter.intro} />
                 <meta
                   itemprop="image"
                   content="https://reactviz.holiday/reactvizholiday.png"
                 />
 
-                <meta
-                  property="og:url"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
-                />
+                <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
                   property={`${frontmatter.title} | ${
@@ -93,13 +86,11 @@ class BlogPostTemplate extends React.Component {
                 />
 
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${frontmatter.title}`} />
                 <meta
-                  name="twitter:description"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  name="twitter:title"
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
+                <meta name="twitter:description" content={frontmatter.intro} />
                 <meta
                   name="twitter:image"
                   content="https://reactviz.holiday/reactvizholiday.png"
