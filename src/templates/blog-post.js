@@ -12,7 +12,6 @@ import DripEmail from '../components/DripEmail'
 import SocialShare from '../components/SocialShare'
 import Prism from 'prismjs';
 import "../components/prism.css";
-import Img from "gatsby-image";
 
 import SolutionBlock from '../components/SolutionBlock'
 
@@ -72,7 +71,7 @@ class BlogPostTemplate extends React.Component {
                   content="https://reactviz.holiday/reactvizholiday.png"
                 />
 
-                <meta property="og:url" content="https://reactviz.holiday" />
+                <meta property="og:url" content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}/>
                 <meta property="og:type" content="website" />
                 <meta property={`${frontmatter.title} | ${data.site.siteMetadata.title}`} />
                 <meta
