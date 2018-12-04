@@ -68,7 +68,7 @@ export default class DripEmail extends Component {
     return (
       <Wrapper>
         <h3 data-drip-attribute="headline">
-          ReactVizHoliday - Get a new dataviz every day until Christmas
+          ReactVizHoliday - Learn React and Dataviz every day until Christmas
         </h3>
         <p data-drip-attribute="description">
           Leave your email and get a new dataviz idea + solution every day until

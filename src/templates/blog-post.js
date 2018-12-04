@@ -70,6 +70,7 @@ class BlogPostTemplate extends React.Component {
           {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
 
           <div>
+            <h2>How it works ⚙️</h2>
             <MDXRenderer scope={this.props.__mdxScope}>
               {mdx.code.body}
             </MDXRenderer>
