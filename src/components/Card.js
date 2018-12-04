@@ -3,16 +3,28 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
 .Card {
-  width: 200px;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
   border-radius: 20px;
   box-shadow: 0px 20px 40px rgba(0,0,0,0.25);
   transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .Card:hover {
     transform: scale(1.1, 1.1);
+  }
+  .CardTop {
+    border-radius: 20px;
+    width: 300px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  
+  }
+  .CardBottom {
+    border-radius: 0 0 20px 20px ;
+    background-color: #04081F;
+    width: 300px;
+  height: 250px;
+  position: relative;
+  overflow: hidden;
   }
   .Card img {
       position: absolute;
@@ -23,6 +35,8 @@ const Wrapper = styled.div`
   h1 {
       color: #fff;
       text-align: center;
+      font-size: 35px;
+      padding: 0 2rem;
   }
 `
 
@@ -30,8 +44,12 @@ const Wrapper = styled.div`
 const Card = props => (
     <Wrapper>
         <div className='Card'>
-            <img src={props.image}/>
-            <h1>{props.title}</h1>
+            <div className='CardTop'>
+                <div>{props.image}</div>
+            </div>
+            <div className='CardBottom'>
+                <h1>{props.title}</h1>
+            </div>
         </div>
     </Wrapper>
   )

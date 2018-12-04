@@ -1,6 +1,6 @@
 .Header {
     width: 100%;
-    position: fixed;
+    position: absolute;
     z-index: 2;
 }
 
@@ -10,8 +10,8 @@
     padding: 3rem 2rem 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    align-items: center;
-    justify-items: center;
+    align-items: left;
+    justify-items: left;
     grid-gap: 2rem;
     grid-template-areas:
     'logo . A1 A2';

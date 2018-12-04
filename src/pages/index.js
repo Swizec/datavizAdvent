@@ -40,6 +40,14 @@ export const query = graphql`
             date
             videoId
             codesandboxId
+            image {
+              publicURL
+              childImageSharp {
+                sizes(maxWidth: 1240 ) {
+                  srcSet
+                }
+              }
+            }
           }
         }
       }

@@ -3,12 +3,14 @@ import styled from 'styled-components'
 import Advent from '../assets/Advent.png'
 import Particles from 'react-particles-js'
 
+
 const Wrapper = styled.div`
   background-color: #04081f;
   padding: 2rem 0;
-  height: 500px;
+  height: 520px;
   .content {
     margin: 0 auto;
+    padding: 3rem 3rem;
     text-align: center;
     display: grid;
     align-items: center;
@@ -41,12 +43,12 @@ const Wrapper = styled.div`
   }
   .particles {
     position: absolute;
-    height: 565px;
+    height: 605px;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 0;
+    z-index: 1;
   }
 
   .toplayer {
@@ -55,9 +57,13 @@ const Wrapper = styled.div`
   @media (max-width: 940px) {
     .Title {
       font-size: 40px;
+      padding: 0;
     }
     img {
-      height: 400px;
+      height: 200px;
+    }
+    .content {
+      margin: 2rem 0;
     }
   }
 `
