@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
+import Tilt from 'react-tilt'
+
 
 import './Header.css'
 import AdventLogo from '../assets/AdventLogo.png'
@@ -17,7 +19,13 @@ export default class Header extends Component {
       <Wrapper>
     <div className='Header'>
       <div className='HeaderGroup'>
-     <Link to='/'><img src={AdventLogo} alt='logo'/></Link>
+      <Tilt className="Tilt" 
+      options={{ 
+        max : 55,
+        scale: 1.5, 
+        }} style={{ height: 100, width: 100 }} >
+        <Link to='/'><img src={AdventLogo} alt='logo'/></Link>
+      </Tilt>
       </div>
     </div>
       </Wrapper>

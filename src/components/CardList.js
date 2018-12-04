@@ -2,16 +2,17 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 import { graphql } from 'gatsby'
+import Img from "gatsby-image";
+
 
 import Card from './Card'
-import Rectangle from '../assets/Rectangle.png'
 
 const Wrapper = styled.div`
   display: grid;
   grid-gap: 20px;
   align-items: center;
   justify-items: center;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin: 0 auto;
   padding: 3rem 0;
   max-width: 1200px;
@@ -21,21 +22,21 @@ const Wrapper = styled.div`
     grid-gap: 20px;
     align-items: center;
     justify-items: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   @media (max-width: 940px) {
     display: grid;
     grid-gap: 20px;
     align-items: center;
     justify-items: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   @media (max-width: 840px) {
     display: grid;
     grid-gap: 20px;
     align-items: center;
     justify-items: center;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   @media (max-width: 740px) {
     display: grid;
@@ -63,8 +64,7 @@ export default ({ posts }) => {
               Day {i + 1}: {node.frontmatter.title}
             </Link>
           }
-          image={Rectangle}
-          key={node.id}
+          
         />
       ))}
     </Wrapper>
