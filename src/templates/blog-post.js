@@ -9,9 +9,10 @@ import styled from 'styled-components'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import DripEmail from '../components/DripEmail'
+import SocialShare from '../components/SocialShare'
 import Prism from 'prismjs';
 import "../components/prism.css";
-
+import Img from "gatsby-image";
 
 import SolutionBlock from '../components/SolutionBlock'
 
@@ -21,7 +22,8 @@ const Wrapper = styled.div`
 
 .Middle {
   max-width: 960px;
-  margin: 10rem auto;
+  margin: 12rem auto;
+  padding: 0 2rem;
 }
 .HeadTop {
   text-align: center;
@@ -57,7 +59,61 @@ class BlogPostTemplate extends React.Component {
             <div className='HeadTop'>
             <Helmet
               title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
-            />
+              
+
+              >
+                <meta itemprop="name" content={`${frontmatter.title}`} />
+                <meta
+                  itemprop="description"
+                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                />
+                <meta
+                  itemprop="image"
+                  content="https://reactviz.holiday/reactvizholiday.png"
+                />
+
+                <meta property="og:url" content="https://reactviz.holiday" />
+                <meta property="og:type" content="website" />
+                <meta property={`${frontmatter.title} | ${data.site.siteMetadata.title}`} />
+                <meta
+                  property="og:description"
+                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                />
+                <meta
+                  property="og:image"
+                  content="https://reactviz.holiday/reactvizholiday.png"
+                />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${frontmatter.title}`} />
+                <meta
+                  name="twitter:description"
+                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                />
+                <meta
+                  name="twitter:image"
+                  content="https://reactviz.holiday/reactvizholiday.png"
+                />
+                <script type="text/javascript">{`
+                  var _dcq = _dcq || [];
+                  var _dcs = _dcs || {};
+                  _dcs.account = '4947882';
+
+                  (function() {
+                      var dc = document.createElement('script');
+                      dc.type = 'text/javascript'; dc.async = true;
+                      dc.src = '//tag.getdrip.com/4947882.js';
+                      var s = document.getElementsByTagName('script')[0];
+                      s.parentNode.insertBefore(dc, s);
+                  })();
+                  `}</script>
+                <script async defer src="https://cdn.simpleanalytics.io/hello.js" />
+                <noscript>
+                  {`<img src="https://api.simpleanalytics.io/hello.gif" alt="" />`}
+                </noscript>
+
+                <html lang="en" />
+              </Helmet>
             <PostHeader postdate={frontmatter.date} />
             <h1>{frontmatter.title}</h1>
             </div>
@@ -97,10 +153,8 @@ class BlogPostTemplate extends React.Component {
             </div>
             <hr></hr>
             <DripEmail/>
+            <SocialShare/>
           </div>
-
-          <DripEmail />
-
           <Footer />
         </Wrapper>
       </Layout>
@@ -129,6 +183,14 @@ export const pageQuery = graphql`
         codesandboxId
         intro
         dataset
+        image {
+          publicURL
+          childImageSharp {
+            sizes(maxWidth: 1240 ) {
+              srcSet
+            }
+          }
+        }         
       }
     }
   }

@@ -7,10 +7,10 @@ import Particles from 'react-particles-js'
 const Wrapper = styled.div`
   background-color: #04081f;
   padding: 2rem 0;
-  height: 500px;
+  height: 520px;
   .content {
     margin: 0 auto;
-    padding: 0 3rem;
+    padding: 3rem 3rem;
     text-align: center;
     display: grid;
     align-items: center;
@@ -43,7 +43,7 @@ const Wrapper = styled.div`
   }
   .particles {
     position: absolute;
-    height: 565px;
+    height: 605px;
     top: 0;
     right: 0;
     bottom: 0;
