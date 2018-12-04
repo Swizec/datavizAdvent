@@ -9,6 +9,10 @@ const Wrapper = styled.div`
   }
   .Card:hover {
     transform: scale(1.1, 1.1);
+    box-shadow: 0 30px 60px rgba(0,0,0, 0.5)
+  }
+  .Card:hover img {
+      transform: translateY(-20px);
   }
   .CardTop {
     border-radius: 20px;
@@ -29,6 +33,7 @@ const Wrapper = styled.div`
   overflow: hidden;
   }
   .Card img {
+    transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       position: absolute;
       background-size: cover;
       

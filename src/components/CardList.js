@@ -97,7 +97,7 @@ export const pageQuery = graphql`
         image {
           publicURL
           childImageSharp {
-            sizes(maxWidth: 1240 ) {
+            fluid(maxWidth: 1240 ) {
               srcSet
             }
           }

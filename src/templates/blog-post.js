@@ -26,10 +26,23 @@ const Wrapper = styled.div`
   .HeadTop {
     text-align: center;
   }
+  .player-wrapper {
+  position: relative;
+  height: 350px;
+  
+}
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 `
 const Codesandbox = styled.iframe`
   width: 100%;
   height: 500px;
+  @media (max-width: 940px) {
+    height: 200px;
+  }
 `
 
 const Lead = styled.p`
@@ -126,9 +139,13 @@ class BlogPostTemplate extends React.Component {
             </div>
 
             {gotVideo ? (
-              <ReactPlayer
+              <div className='player-wrapper'>
+              <ReactPlayer className='ReactPlayer'
+              width='100%'
+              height='100%'
                 url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
               />
+              </div>
             ) : null}
 
             <Lead>{frontmatter.intro}</Lead>
@@ -196,7 +213,7 @@ export const pageQuery = graphql`
         image {
           publicURL
           childImageSharp {
-            sizes(maxWidth: 1240) {
+            fluid(maxWidth: 1240) {
               srcSet
             }
           }
