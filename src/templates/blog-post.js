@@ -31,42 +31,41 @@ const Wrapper = styled.div`
     padding: 0 1rem;
   }
   .player-wrapper {
-  position: relative;
-  height: 350px;
-  
-}
-.react-player {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-`;
+    position: relative;
+    height: 520px;
+  }
+  .react-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+`
 const WrapperNav = styled.div`
-.Prev , .Next {
-  max-width: 200px;
-  text-decoration: none;
-  background-color: #420000;
-  background-image: linear-gradient(45deg, #a30000 39%, #a30000 100%);
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0px 20px 40px rgba(0,0,0,0.25);
-  list-style-type: none;
-}
-margin: 3rem 1rem;
-display: grid;
-grid-gap: 10px;
-align-items: center;
-justify-items: center;
-grid-template-columns: 1fr 1fr;
-grid-template-areas:
-"G1 G2";
+  .Prev,
+  .Next {
+    max-width: 200px;
+    text-decoration: none;
+    background-color: #420000;
+    background-image: linear-gradient(45deg, #a30000 39%, #a30000 100%);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
+    list-style-type: none;
+  }
+  margin: 3rem 1rem;
+  display: grid;
+  grid-gap: 10px;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'G1 G2';
 
-.Prev {
-  grid-area: G2;
-}
-.Next {
-  grid-area: G1;
-}
+  .Prev {
+    grid-area: G1;
+  }
+  .Next {
+    grid-area: G2;
+  }
 `
 const Codesandbox = styled.iframe`
   width: 100%;
@@ -91,7 +90,7 @@ class BlogPostTemplate extends React.Component {
 
     const gotVideo = frontmatter.videoId !== 'NA',
       gotSandbox = frontmatter.codesandboxId !== 'NA'
-      
+
     const { previous, next } = this.props.pageContext
 
     return (
@@ -170,12 +169,13 @@ class BlogPostTemplate extends React.Component {
             </div>
 
             {gotVideo ? (
-              <div className='player-wrapper'>
-              <ReactPlayer className='ReactPlayer'
-              width='100%'
-              height='100%'
-                url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
-              />
+              <div className="player-wrapper">
+                <ReactPlayer
+                  className="ReactPlayer"
+                  width="100%"
+                  height="100%"
+                  url={`https://www.youtube.com/watch?v=${frontmatter.videoId}`}
+                />
               </div>
             ) : null}
 
@@ -214,22 +214,20 @@ class BlogPostTemplate extends React.Component {
             <SocialShare />
           </div>
           <WrapperNav>
-              <div className='Prev'>
-                  {
-                    previous &&
-                    <Link to={previous.fields.slug} rel="prev">
-                        →{previous.frontmatter.title}
-                    </Link>
-                  }
+            {previous ? (
+              <div className="Prev">
+                <Link to={previous.fields.slug} rel="prev">
+                  ← {previous.frontmatter.title}
+                </Link>
               </div>
-              <div className='Next'>
-                {
-                  next &&
-                  <Link to={next.fields.slug} rel="next">
-                    {next.frontmatter.title} ←
-                  </Link>
-                }
+            ) : null}
+            {next ? (
+              <div className="Next">
+                <Link to={next.fields.slug} rel="next">
+                  {next.frontmatter.title} →
+                </Link>
               </div>
+            ) : null}
           </WrapperNav>
           <Footer />
         </Wrapper>
