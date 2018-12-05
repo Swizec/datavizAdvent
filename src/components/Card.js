@@ -51,7 +51,8 @@ const Wrapper = styled.div`
 const Card = props => (
     <Wrapper>
         <div className='Card'>
-            <img src={props.cover} className='CardTop'/>
+        
+            <div className='CardTop'>{props.cover}</div> 
                 
             
             <div className='CardBottom'>

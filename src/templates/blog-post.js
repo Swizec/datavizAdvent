@@ -62,10 +62,10 @@ grid-template-areas:
 "G1 G2";
 
 .Prev {
-  grid-area: G1;
+  grid-area: G2;
 }
 .Next {
-  grid-area: G2;
+  grid-area: G1;
 }
 `
 const Codesandbox = styled.iframe`
@@ -218,7 +218,7 @@ class BlogPostTemplate extends React.Component {
                   {
                     previous &&
                     <Link to={previous.fields.slug} rel="prev">
-                      ← {previous.frontmatter.title}
+                        →{previous.frontmatter.title}
                     </Link>
                   }
               </div>
@@ -226,7 +226,7 @@ class BlogPostTemplate extends React.Component {
                 {
                   next &&
                   <Link to={next.fields.slug} rel="next">
-                    {next.frontmatter.title} →
+                    {next.frontmatter.title} ←
                   </Link>
                 }
               </div>
