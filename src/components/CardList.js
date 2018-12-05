@@ -56,6 +56,7 @@ const Wrapper = styled.div`
 `
 
 export default ({ posts }) => {
+  
   return (
     <Wrapper>
       {posts.map(({ node }, i) => (
@@ -65,9 +66,10 @@ export default ({ posts }) => {
               Day {i + 1}: {node.frontmatter.title}
             </Link>
           }
-          cover={<Link to={node.fields.slug}><img src={AdventLogo} alt='logo'/></Link>}
-
           
+          cover={<Link to={node.fields.slug}><Img fluid={node.frontmatter.image} />
+          </Link>}
+
           key={node.id}
         />
       ))}

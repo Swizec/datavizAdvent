@@ -1,6 +1,8 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
+import { Link } from 'gatsby'
+
 import Layout from '../components/Layout'
 import PostHeader from '../components/PostHeader'
 import MDXRenderer from 'gatsby-mdx/mdx-renderer'
@@ -25,6 +27,8 @@ const Wrapper = styled.div`
   }
   .HeadTop {
     text-align: center;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
   .player-wrapper {
   position: relative;
@@ -35,6 +39,33 @@ const Wrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+}
+`;
+const WrapperNav = styled.div`
+.Prev , .Next {
+  max-width: 200px;
+  text-decoration: none;
+  background-color: #420000;
+  background-image: linear-gradient(45deg, #a30000 39%, #a30000 100%);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 20px 40px rgba(0,0,0,0.25);
+  list-style-type: none;
+}
+margin: 3rem 1rem;
+display: grid;
+grid-gap: 10px;
+align-items: center;
+justify-items: center;
+grid-template-columns: 1fr 1fr;
+grid-template-areas:
+"G1 G2";
+
+.Prev {
+  grid-area: G1;
+}
+.Next {
+  grid-area: G2;
 }
 `
 const Codesandbox = styled.iframe`
@@ -61,7 +92,7 @@ class BlogPostTemplate extends React.Component {
     const gotVideo = frontmatter.videoId !== 'NA',
       gotSandbox = frontmatter.codesandboxId !== 'NA'
       
-    
+    const { previous, next } = this.props.pageContext
 
     return (
       <Layout location={location}>
@@ -182,6 +213,24 @@ class BlogPostTemplate extends React.Component {
             <DripEmail />
             <SocialShare />
           </div>
+          <WrapperNav>
+              <div className='Prev'>
+                  {
+                    previous &&
+                    <Link to={previous.fields.slug} rel="prev">
+                      ← {previous.frontmatter.title}
+                    </Link>
+                  }
+              </div>
+              <div className='Next'>
+                {
+                  next &&
+                  <Link to={next.fields.slug} rel="next">
+                    {next.frontmatter.title} →
+                  </Link>
+                }
+              </div>
+          </WrapperNav>
           <Footer />
         </Wrapper>
       </Layout>
