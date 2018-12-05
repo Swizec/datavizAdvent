@@ -9,6 +9,10 @@ const Wrapper = styled.div`
   }
   .Card:hover {
     transform: scale(1.1, 1.1);
+    box-shadow: 0 30px 60px rgba(0,0,0, 0.5)
+  }
+  .Card:hover img {
+      transform: translateY(-20px);
   }
   .CardTop {
     border-radius: 20px;
@@ -20,22 +24,25 @@ const Wrapper = styled.div`
   }
   .CardBottom {
     border-radius: 0 0 20px 20px ;
-    background-color: #04081F;
+    background-color: #420000;
+    background-image: linear-gradient(45deg, #420000 39%, #a30000 100%);
+
     width: 300px;
   height: 250px;
   position: relative;
   overflow: hidden;
   }
   .Card img {
+    transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       position: absolute;
-      top: 0;
-      height: 110%;
-      z-index: -1;
+      background-size: cover;
+      
+      
   }
   h1 {
       color: #fff;
       text-align: center;
-      font-size: 35px;
+      font-size: 30px;
       padding: 0 2rem;
   }
 `
@@ -44,9 +51,9 @@ const Wrapper = styled.div`
 const Card = props => (
     <Wrapper>
         <div className='Card'>
-            <div className='CardTop'>
-                <div>{props.image}</div>
-            </div>
+            <img src={props.cover} className='CardTop'/>
+                
+            
             <div className='CardBottom'>
                 <h1>{props.title}</h1>
             </div>
