@@ -1,8 +1,33 @@
 ---
 title: Money spent on Christmas
 date: '2018-12-04'
-videoId: NA
-codesandboxId: NA
+videoId: YGv1LNgKbn4
+codesandboxId: 6yqx23v6mn
 dataset: statistic_id246963_average-spending-on-christmas-gifts-in-the-us-1999-2018.xlsx
 intro: Christmas can be very expensive. Plot a line of how much americans think they're spending on Christmas gifts over the years.
 ---
+
+Today we built a little line chart with two axes and emoji datapoints. Hover an emoji, get a line highlighting where it falls on the axis. Makes it easy to see what happened when.
+
+It's interesting to see how Christmas spending was on the rise and reached a peak in 2007. Crashed in 2008 then started rising again. Great insight into the US economy.
+
+When times are good, people buy gifts. When times are bad, people don't. 🧐
+
+To build this linechart we used the same insight [as yesterday](/christmas-trees/):
+
+> Our data is static and never changes. We don't expect to change positions and size of our chart. That means we can cut some corners.
+
+Once again we load data in `componentDidMount` using `d3.tsv` to parse a tab separated values file.
+We feed the result array of objects into a `<Linechart>` component.
+
+## The basic linechart
+
+Rendering a basic linechart was pretty quick: D3's got a line generator 🤙
+
+## The axes
+
+## The 💸 money emojis
+
+## A highlight for easy reading
+
+Enjoy ✌️
