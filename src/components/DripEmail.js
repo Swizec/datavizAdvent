@@ -2,25 +2,40 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
+h3 {
+  font-weight: 900;
+  font-size: 30px;
+  text-align: center;
+}
+  .banner {
+  background-color: #004230;
+  padding: 2rem 2rem;
+  margin: 0rem 0;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+} 
+.bannerText{
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 400;
+}
+strong {
+  color: gold;
+}
+  @media (max-width: 940px) {
+    h3 {
+      font-size: 25px;
+    }
+  }
+`;
+const WrapperGroup = styled.div`
   max-width: 800px;
   text-align: center;
   margin: 3rem auto;
   padding: 0 2rem;
   color: #384047;
-  ${'' /* .box {
-    background-color: green;
-    box-shadow: 0px 20px 40px rgba(0,0,0,0.25);
-    border-radius: 20px;
-    padding: 2rem;
-    margin: 2rem 0;
-    color: #fff;
-    font-weight: 800;
-  } */}
-
-  @media (max-width: 940px) {
-  }
 `
-
 const WrapperForm = styled.div`
   input {
     max-width: 400px;
@@ -76,22 +91,27 @@ export default class DripEmail extends Component {
   render() {
     return (
       <Wrapper>
+        <div className="banner">
         <h3 data-drip-attribute="headline">
-          ReactVizHoliday - Learn React and Dataviz every day until Christmas
+        🎁 ReactVizHoliday 🎁 
+        <br/>
+        Learn React and Dataviz every day until Christmas 
         </h3>
-        <div className="box">
+          <div className='bannerText'>
           <p data-drip-attribute="description">
-            Leave your email and get a new dataviz idea + solution every day
-            until Christmas. Great for practice. Fun to watch. Learn new stuff
-            🎅
+            Leave your <strong>email</strong> and get a new dataviz idea + solution every day
+            until Christmas. <strong>Great for practice. Fun to watch. Learn new stuff.</strong>
+            
           </p>
           <p>
             Every viz comes with a fun dataset, a livecode session, a solution
             in CodeSandbox, and a writeup about how it all fits together.
-            Perfect way to take your React skills beyond the TODOapp. Looks
-            great on your portfolio. ✌️
+            <strong>Perfect way to take your React skills beyond the TODOapp.</strong> Looks
+            great on your portfolio. 
           </p>
+          </div>
         </div>
+      <WrapperGroup>
         <WrapperForm>
           <form
             action="https://www.getdrip.com/forms/468020372/submissions"
@@ -115,6 +135,7 @@ export default class DripEmail extends Component {
             />
           </form>
         </WrapperForm>
+        </WrapperGroup>
       </Wrapper>
     )
   }
