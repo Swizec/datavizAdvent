@@ -24,10 +24,193 @@ We feed the result array of objects into a `<Linechart>` component.
 
 Rendering a basic linechart was pretty quick: D3's got a line generator 🤙
 
+![Just the line](./justline.png)
+
+That's an SVG `<path>` using `d3.line` to create the `d` shape attribute. Wrapped into a React component it looks like this:
+
+```javascript
+class Linechart extends React.Component {
+  x = d3
+    .scalePoint()
+    .domain(this.props.data.map(d => d.year))
+    .range([0, this.props.width])
+  y = d3
+    .scaleLinear()
+    .domain([500, d3.max(this.props.data, d => d.avg_spend)])
+    .range([this.props.height, 0])
+
+  line = d3
+    .line()
+    .x(d => this.x(d.year))
+    .y(d => this.y(d.avg_spend))
+
+  render() {
+    const { x, y, data } = this.props
+
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+        <Line d={this.line(data)} />
+      </g>
+    )
+  }
+}
+```
+
+We define two scales, `x` and `y` to help us translate between datapoints and coordinates on the screen. Without those year 2018 would render 2018 pixels to the right and that's too much.
+
+`x` is a point scale, which like [yesterday's band scale](/christmas-trees/) neatly arranges datapoints along a axis. Unlike a band scale it places them in points at the middle of each ragne.
+
+`y` is a boring old liear scale. Americans spend so much on gifts that we cut off the domain at \$500. Makes the graph more readable and less tall.
+
+Then we have the line generator. We define it with `d3.line`, tell it how to get `x` and `y` coordinates with our scales and leave the rest as defaults.
+
+Rendering is a matter of creating a wrapping `<g>` element to position our graph and group all future additions. Inside, we render a styled `<Line>` component and feed data into the line generator. That handles the rest.
+
+You have to style lines or they come out invisible.
+
+```javascript
+const Line = styled.path`
+  stroke-width: 3px;
+  stroke: ${d3.color('green').brighter(1.5)};
+  fill: none;
+  stroke-linejoin: round;
+`
+```
+
+Give it a nice thickness, some light green color, remove the default black fill, and make edges round. Lovely.
+
+Note the `d3.color('green').brighter(1.5)` trick. We can use D3 to manipulate colors 🎨
+
 ## The axes
+
+![Line with axes](./withaxes.png)
+
+Because axes are a tricky best to build, we used a trick from [React for Data Visualization](https://swizec1.teachable.com/p/react-for-data-visualization/) - blackbox rendering.
+
+That's when you take pure D3 code, wrap it in a React component, and let D3 handle the rendering. It's less efficient and doesn't scale as well, but perfect for little things like this.
+
+You can use my [d3blackbox](https://d3blackbox.com) library or make your own. I used the lib 😛
+
+```javascript
+const BottomAxis = d3blackbox((anchor, props) => {
+  const axis = d3.axisBottom().scale(props.scale)
+  d3.select(anchor.current).call(axis)
+})
+
+const LeftAxis = d3blackbox((anchor, props) => {
+  const axis = d3.axisLeft().scale(props.scale)
+  d3.select(anchor.current).call(axis)
+})
+```
+
+`BottomAxis` and `LeftAxis` are both tiny. Two lines of code is all you need to render a axis with D3.
+
+1. Define the axis generator and give it a scale. We took it from props.
+2. Select the element you want to render into and call your generator
+
+`d3blackbox` handles the rest.
+
+It's a higher order component (hook version called `useD3` is also in the package). Takes your render function whatever it is, renders an anchor element, positions it with `x` and `y` props, and makes sure to call your render function on any update.
+
+Quickest way to slap some D3 into some React 👌
 
 ## The 💸 money emojis
 
+How do you make a linechart more fun? You add money-flying-away emojis.
+
+![Line with emojis](./moneymoji.png)
+
+Interactive points on each edge of a linechart are pretty common after all. Makes it easier to spot where the line breaks and shows actual data and where it's just a line.
+
+Adding emojis happens in a loop:
+
+```javascript
+{
+  data.map(d => (
+    <Money x={this.x(d.year)} y={this.y(d.avg_spend)}>
+      💸
+      <title>${d.avg_spend}</title>
+    </Money>
+  ))
+}
+```
+
+Iterate through our data and render a styled `text` component called `Money` for each datapoint. Using the same scales as we did for the linechart gives us correct positioning out of the box.
+
+One of the many benefits of scales 😉
+
+Styling deals with setting emoji font size and centering text on the `(x, y)` anchor point.
+
+```javascript
+const Money = styled.text`
+  font-size: 20px;
+  cursor: pointer;
+  text-anchor: middle;
+  alignment-baseline: central;
+`
+```
+
+Oh and adding a `<title>` tag to our text creates a default browser tooltip. Hover over an emoji for a few seconds and it shows some extra info.
+
 ## A highlight for easy reading
+
+![A highlight to make life easier](./highlight.png)
+
+Linecharts can be hard to read. With datapoints so far from the axes it can be hard to see how everything lines up.
+
+So we added a line to help our users out.
+
+We keep track of what's currently highlighted in component state. When a value exists, we use it to render a vertical line.
+
+```javascript
+class Linechart extends React.Component {
+  state = {
+    highlightYear: null
+  };
+
+  // ...
+
+  highlight = year => this.setState({ highlightYear: year });
+  unhighlight = () => this.setState({ highlightYear: null });
+
+  // ...
+
+  {highlightYear ? (
+    <Highlight
+      x1={this.x(highlightYear)}
+      y1={-20}
+      x2={this.x(highlightYear)}
+      y2={height + 20}
+    />
+  ) : null}
+
+  // ...
+
+  <Money
+    x={this.x(d.year)}
+    y={this.y(d.avg_spend)}
+    onMouseOver={() => this.highlight(d.year)}
+    onMouseOut={this.unhighlight}
+  >
+```
+
+Nothing too crazy.
+
+We have a `highlightYear` state. This gets set on `onMouseOver` in the `<Money>` emoji. On `onMouseOut`, we reset the highlight year back to `null`.
+
+In the render method we then check whether `highlightYear` is set. If it is, we render a vertical line that's styled to be thin and lightgrey. If it isn't, we don't.
+
+There's a lot we could do with that highlight to make it look smoother, but time was up and this is good enough.
+
+## What you learned 🧐
+
+Today you learned:
+
+- D3 point scales
+- using class field values for D3 objects
+- d3blackbox for simple D3 integrations
+- the `<title>` trick on text tags
+- using D3 axes
+- adding a little interactivity
 
 Enjoy ✌️
