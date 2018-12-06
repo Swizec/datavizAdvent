@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 import { graphql } from 'gatsby'
-import Img from "gatsby-image";
+import Img from 'gatsby-image'
 import AdventLogo from '../assets/AdventLogo.png'
-
 
 import Card from './Card'
 
@@ -56,7 +55,7 @@ const Wrapper = styled.div`
 `
 
 export default ({ posts }) => {
-  
+  console.log(posts)
   return (
     <Wrapper>
       {posts.map(({ node }, i) => (
@@ -98,11 +97,11 @@ export const pageQuery = graphql`
         image {
           publicURL
           childImageSharp {
-            fluid(maxWidth: 1240 ) {
+            fluid(maxWidth: 1240) {
               srcSet
             }
           }
-        }         
+        }
       }
     }
   }
