@@ -67,7 +67,8 @@ export default ({ posts }) => {
             </Link>
           }
           
-         
+          cover={<Link to={node.fields.slug}><img src={node.frontmatter.image && node.frontmatter.image.publicURL} alt='logo'/></Link>}
+
           key={node.id}
         />
       ))}
