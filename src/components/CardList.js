@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 import { graphql } from 'gatsby'
-import Img from 'gatsby-image'
-import AdventLogo from '../assets/AdventLogo.png'
 
 import Card from './Card'
 
@@ -66,7 +64,7 @@ export default ({ posts }) => {
             </Link>
           }
           
-          cover={<Link to={node.fields.slug}><img src={node.frontmatter.image && node.frontmatter.image.publicURL} alt='logo'/></Link>}
+          cover={<Link to={node.fields.slug}><img src={node.frontmatter.image && node.frontmatter.image.publicURL} alt='datavis'/></Link>}
 
           key={node.id}
         />
