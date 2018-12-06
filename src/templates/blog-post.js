@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   .HeadTop {
     text-align: center;
     margin: 0 auto;
-    padding: 0 1rem;
+    
   }
   .player-wrapper {
     position: relative;
@@ -203,10 +203,9 @@ class BlogPostTemplate extends React.Component {
                 {mdx.code.body}
               </MDXRenderer>
             </div>
-            <hr />
+          </div>
             <DripEmail />
             <SocialShare />
-          </div>
           <WrapperNav>
             {previous ? (
               <div className="Prev">
