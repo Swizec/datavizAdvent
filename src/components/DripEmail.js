@@ -50,20 +50,8 @@ const WrapperForm = styled.div`
     text-transform: uppercase;
     vertical-align: middle;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px  solid #ccc;
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -webkit-transition: border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
-    -webkit-transition: border-color 0.15s ease-in-out,
-      -webkit-box-shadow 0.15s ease-in-out;
-    transition: border-color 0.15s ease-in-out,
-      -webkit-box-shadow 0.15s ease-in-out;
-    -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-      -webkit-box-shadow 0.15s ease-in-out;
   }
   input[type='submit'] {
     background-color: red;
