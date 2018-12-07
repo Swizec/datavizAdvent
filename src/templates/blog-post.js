@@ -98,8 +98,9 @@ class BlogPostTemplate extends React.Component {
     const gotVideo = frontmatter.videoId !== 'NA',
       gotSandbox = frontmatter.codesandboxId !== 'NA'
 
-    const { previous, next } = this.props.pageContext,
-      imageURL =
+    const { previous, next } = this.props.pageContext
+
+      const imageURL =
         (frontmatter.image && frontmatter.image.publicURL) ||
         'https://reactviz.holiday/reactvizholiday.png'
 

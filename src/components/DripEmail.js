@@ -46,13 +46,29 @@ const WrapperForm = styled.div`
     padding: 6px;
     font-size: 14px;
     line-height: 1.428571429;
-    
     text-transform: uppercase;
     vertical-align: middle;
     color: #fff;
     border: none;
-    border-bottom: 2px solid red;
+    border-bottom: 2px solid gold;
     background: rgba(0, 0, 0, 0.1);
+
+    ::-webkit-input-placeholder {
+  color: peachpuff;
+  font-size: 13px;
+}
+::-moz-placeholder {
+  color: peachpuff;
+  font-size: 13px;
+}
+:-ms-input-placeholder {
+  color: peachpuff;
+  font-size: 13px;
+}
+::placeholder {
+  color: peachpuff;
+  font-size: 13px;
+}
   }
   input[type='submit'] {
     background-color: red;
@@ -99,7 +115,6 @@ export default class DripEmail extends Component {
             great on your portfolio. 
           </p>
           </div>
-        </div>
       <WrapperGroup>
         <WrapperForm>
           <form
@@ -125,6 +140,7 @@ export default class DripEmail extends Component {
           </form>
         </WrapperForm>
         </WrapperGroup>
+        </div>
       </Wrapper>
     )
   }
