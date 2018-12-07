@@ -33,9 +33,10 @@ const Wrapper = styled.div`
   overflow: hidden;
   }
   .Card img {
-      height: 100%;
-      position: absolute;
-      background-size: cover;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+    background-size: cover;    
     transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       
       

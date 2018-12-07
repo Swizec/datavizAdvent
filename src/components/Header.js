@@ -16,7 +16,12 @@ export default class Header extends Component {
     const { imageURL } = this.props
     return (
       <Wrapper>
-        <div className="Header" style={{ background: `url(${imageURL})` }}>
+        <div className="Header" style={{ background: `url(${imageURL})`,
+        height: "300px",
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain'
+        }}>
           <div className="HeaderGroup">
             <Tilt
               className="Tilt"

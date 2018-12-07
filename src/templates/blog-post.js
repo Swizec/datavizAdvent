@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
   .Middle {
     max-width: 960px;
-    margin: 12rem auto;
+    margin: 18rem auto;
     padding: 0 2rem;
   }
   .HeadTop {
