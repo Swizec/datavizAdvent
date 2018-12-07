@@ -9,7 +9,7 @@ import MDXRenderer from 'gatsby-mdx/mdx-renderer'
 import ReactPlayer from 'react-player'
 import styled from 'styled-components'
 import Footer from '../components/Footer'
-import Header from '../components/Header'
+import PostImage from '../components/PostImage'
 import DripEmail from '../components/DripEmail'
 import SocialShare from '../components/SocialShare'
 import Prism from 'prismjs'
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
   .Middle {
     max-width: 960px;
-    margin: 12rem auto;
+    margin: 0rem auto;
     padding: 0 2rem;
   }
   .HeadTop {
@@ -51,6 +51,7 @@ const WrapperNav = styled.div`
     border-radius: 20px;
     box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
     list-style-type: none;
+    transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   margin: 3rem 1rem;
   display: grid;
@@ -63,8 +64,14 @@ const WrapperNav = styled.div`
   .Prev {
     grid-area: G1;
   }
+  .Prev:hover {
+    transform: scale(1.1, 1.1);
+  }
   .Next {
     grid-area: G2;
+  }
+  .Next:hover {
+    transform: scale(1.1, 1.1);
   }
 `
 const Codesandbox = styled.iframe`
@@ -99,7 +106,9 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={location}>
         <Wrapper>
-          <Header imageURL={imageURL} />
+        <PostImage 
+          cover={<img src={imageURL}/>}
+        />
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
@@ -110,7 +119,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={imageURL} />
+                <meta itemprop="image" content={<img src={imageURL}/>} />
 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
@@ -125,7 +134,7 @@ class BlogPostTemplate extends React.Component {
                     data.site.siteMetadata.title
                   }`}
                 />
-                <meta property="og:image" content={imageURL} />
+                <meta property="og:image" content={<img src={imageURL}/>} />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
@@ -133,7 +142,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={imageURL} />
+                <meta name="twitter:image" content={<img src={imageURL}/>} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};

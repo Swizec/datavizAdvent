@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   height: 200px;
   position: relative;
   overflow: hidden;
-  
+  border-radius: 20px 20px 0px 0px ;
   }
   .CardBottom {
     border-radius: 0 0 20px 20px ;
@@ -33,9 +33,11 @@ const Wrapper = styled.div`
   overflow: hidden;
   }
   .Card img {
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+    background-size: cover;    
     transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-      position: absolute;
-      background-size: cover;
       
       
   }
@@ -53,8 +55,7 @@ const Card = props => (
         <div className='Card'>
         
             <div className='CardTop'>{props.cover}</div> 
-                
-            
+    
             <div className='CardBottom'>
                 <h1>{props.title}</h1>
             </div>

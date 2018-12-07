@@ -46,12 +46,13 @@ const WrapperForm = styled.div`
     padding: 6px;
     font-size: 14px;
     line-height: 1.428571429;
-    color: #555;
+    
     text-transform: uppercase;
     vertical-align: middle;
-    background-color: #fff;
-    border: 1px  solid #ccc;
-    border-radius: 4px;
+    color: #fff;
+    border: none;
+    border-bottom: 2px solid red;
+    background: rgba(0, 0, 0, 0.1);
   }
   input[type='submit'] {
     background-color: red;
