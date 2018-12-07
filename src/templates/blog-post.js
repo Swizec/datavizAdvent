@@ -51,6 +51,7 @@ const WrapperNav = styled.div`
     border-radius: 20px;
     box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
     list-style-type: none;
+    transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   margin: 3rem 1rem;
   display: grid;
@@ -63,8 +64,14 @@ const WrapperNav = styled.div`
   .Prev {
     grid-area: G1;
   }
+  .Prev:hover {
+    transform: scale(1.1, 1.1);
+  }
   .Next {
     grid-area: G2;
+  }
+  .Next:hover {
+    transform: scale(1.1, 1.1);
   }
 `
 const Codesandbox = styled.iframe`
@@ -99,7 +106,8 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={location}>
         <Wrapper>
-          <Header imageURL={(frontmatter.image && frontmatter.image.publicURL)} />
+          <Header imageURL={(frontmatter.image && frontmatter.image.publicURL) ||
+        'https://reactviz.holiday/reactvizholiday.png'} />
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
@@ -110,7 +118,8 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={(frontmatter.image && frontmatter.image.publicURL) } />
+                <meta itemprop="image" content={(frontmatter.image && frontmatter.image.publicURL) ||
+        'https://reactviz.holiday/reactvizholiday.png'} />
 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
@@ -125,7 +134,8 @@ class BlogPostTemplate extends React.Component {
                     data.site.siteMetadata.title
                   }`}
                 />
-                <meta property="og:image" content={(frontmatter.image && frontmatter.image.publicURL) } />
+                <meta property="og:image" content={(frontmatter.image && frontmatter.image.publicURL) ||
+        'https://reactviz.holiday/reactvizholiday.png'} />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
@@ -133,7 +143,8 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={(frontmatter.image && frontmatter.image.publicURL)} />
+                <meta name="twitter:image" content={(frontmatter.image && frontmatter.image.publicURL) ||
+        'https://reactviz.holiday/reactvizholiday.png'} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};

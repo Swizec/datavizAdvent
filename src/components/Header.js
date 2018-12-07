@@ -17,7 +17,7 @@ export default class Header extends Component {
     return (
       <Wrapper>
         <div className="Header" style={{ background: `url(${imageURL})`,
-        height: "300px",
+        height: "25%",
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain'
