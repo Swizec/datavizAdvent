@@ -1,8 +1,216 @@
 ---
-title: What Americans want for Christmas?
+title: What do Americans want for Christmas?
 date: '2018-12-06'
-videoId: NA
-codesandboxId: NA
+videoId: pn45HcG1faM
+codesandboxId: v874323625
 dataset: statistic_id643714_christmas-gifts-desired-by-us-consumers-2017-by-age-group.xlsx
 intro: Different ages want different things. Create a horizontal stack chart showing what everyone wants for Christmas.
+image: './what-americas-want.png'
 ---
+
+Today's challenge is a perfect example of how [chroma-js](https://gka.github.io/chroma.js/) automatically makes your dataviz beautiful. Best magic trick I ever learned from Shirley Wu.
+
+We used [Susie Lu's d3-legend](https://d3-legend.susielu.com/) for the color legend, D3's stack layout to calculate coordinates for stacking those bar charts, D3 axis for the axis, and the rest was React. Similar code to the bar chart in [Christmas movies at the box office](/christmas-movies/).
+
+## Load the data
+
+We begin once more by loading the data. If you've been following along so far, this code will look familiar.
+
+```javascript
+  componentDidMount() {
+    d3.tsv("/data.tsv", d => ({
+      category: d.category,
+      young: Number(d.young),
+      mid: Number(d.mid),
+      old: Number(d.old)
+    })).then(data => this.setState({ data }));
+  }
+```
+
+`d3.tsv` loads our tab separated values file with data, a parsing function turns each line into nice objects we can use, and then we save it into component local state.
+
+## An axis and a legend
+
+Building axes and legends from scratch is not hard, but it is fiddly and time consuming and fraught with tiny little traps for you to fall into. No time for that on a daily challenge!
+
+[d3blackbox](https://d3blackbox.com) to the rescue! &lt;supermanemoji>
+
+```javascript
+const VerticalAxis = d3blackbox((anchor, props) => {
+  const axis = d3.axisLeft().scale(props.scale)
+  d3.select(anchor.current).call(axis)
+})
+
+const Legend = d3blackbox((anchor, props) => {
+  d3.select(anchor.current).call(
+    legend
+      .legendColor()
+      .scale(props.scale)
+      .title('Age group')
+  )
+})
+```
+
+Here you can see just how flexible the blackbox rendering approach I teach in [React for Data Visualization](https://swizec1.teachable.com/p/react-for-data-visualization) can be. You can take just about any D3 code and turn it into a React component.
+
+Means you don't have to write your own fiddly stuff 👌
+
+`d3blackbox` ensures our render functions are called on every component render and creates a positionable grouping, `<g>`, SVG element for us to move around.
+
+## Each category's barchart
+
+You can think a stacked bar chart as a series of barcharts. Each category gets its own.
+
+```javascript
+const BarChart = ({ entries, y, width, marginLeft, color }) => (
+  <React.Fragment>
+    {entries.map(([min, max], i) => (
+      <rect
+        x={marginLeft + width(min)}
+        width={width(max) - width(min)}
+        y={y(y.domain()[i])}
+        height={y.bandwidth()}
+        key={y.domain()[i]}
+        fill={color}
+      >
+        <title>
+          {min}, {max}
+        </title>
+      </rect>
+    ))}
+  </React.Fragment>
+)
+```
+
+These barchart subcomponents are fully controled components. They help us clean up the rendering and don't need any logic of their own.
+
+Takes a list of `entries` to render, a `y` scale for vertical positioning, a `width` scale to calculate widths, some margin on the left for the big axis, and a `color` to use.
+
+Renders a React Fragment with a bunch of rectangles. Loop over the entries, return a positioned rectangle for each.
+
+Our entries are pairs of `min` and `max` values as calculated by the stack layout. We use them to decide the horizontal, `x` position of our rectangle, and its width. Using the `width` scale both times. That takes care of proper sizing for us.
+
+That `key` prop is a little funny though.
+
+The `y` scale is an ordinal scale. Its domain is a list of categories, which means we can get the name of each bar's category by picking the right index out of that array. Perfect for identifying our elements :)
+
+## A stack chart built with React and D3
+
+Here's how all of that ties together 👇
+
+```javascript
+class StackChart extends React.Component {
+  y = d3
+    .scaleBand()
+    .domain(this.props.data.map(d => d.category))
+    .range([0, this.props.height])
+    .paddingInner(0.1)
+  stack = d3.stack().keys(['young', 'mid', 'old'])
+  color = chroma.brewer.pastel1
+  colorScale = d3
+    .scaleOrdinal()
+    .domain(['🧒 18 to 29 years', '🙍‍♂️ 30 to 59 years', '🧓 60 years or older'])
+    .range(this.color)
+
+  render() {
+    const { data } = this.props
+
+    const stack = this.stack(data)
+
+    const width = d3
+      .scaleLinear()
+      .domain([0, d3.max(stack[2], d => d[1])])
+      .range([0, 400])
+
+    return (
+      <g>
+        <VerticalAxis scale={this.y} x={220} y={0} />
+        {this.stack(data).map((entries, i) => (
+          <BarChart
+            entries={entries}
+            y={this.y}
+            key={i}
+            marginLeft={223}
+            color={this.color[i]}
+            width={width}
+          />
+        ))}
+        <Legend scale={this.colorScale} x={500} y={this.props.height - 100} />
+      </g>
+    )
+  }
+}
+```
+
+Okay that's a longer code snippet 😅
+
+### D3 setup
+
+In the beginning, we have some D3 objects.
+
+1. A `y` band scale. Handles vertical positioning, sizing, spacing, and all
+2. A `stack` generator with hardcoded keys. We know what we want and there's no need to be fancy
+3. A `color` list. Chroma's `brewer.pastel1` looked Best
+4. A `colorScale` with a more verbose domain and our list of colors as the range
+
+Having a separate list of colors and color scale is important. Our individual bars want a specific color, our legend wants a color scale. They use different domains and unifying them would be fiddly. Easier to keep apart.
+
+### render
+
+We do a little cheating in our `render` method. That `stack` should be generated in a `componentDidUpdate` of some sort and so should the `width` linear scale.
+
+But our data is small so it's okay to recalculate all this every time.
+
+The `stack` generator creates a list of lists of entries. 3 lists, one for each category (age group). Each list contains pairs of numbers representing how they should stack.
+
+Like this
+
+```
+[
+  [[0, 5], [0, 10]],
+  [[5, 7], [10, 16]],
+  [[13, 20], [26, 31]]
+]
+```
+
+Entries in the first list all begin at `0`. Second list begins where the previous list ends. Third list begins where the second list ended. Stacking up as far as you need.
+
+Your job is then to take these numbers, feed them into some sort of scale to help with sizing, and render.
+
+That was our `<BarChart>` sub component up above. It takes each list, feeds its values into a `width` scale, and renders.
+
+Making sure we render 3 of them, one for each age group, is this part:
+
+```javascript
+return (
+  <g>
+    <VerticalAxis scale={this.y} x={220} y={0} />
+    {stack.map((entries, i) => (
+      <BarChart
+        entries={entries}
+        y={this.y}
+        key={i}
+        marginLeft={223}
+        color={this.color[i]}
+        width={width}
+      />
+    ))}
+    <Legend scale={this.colorScale} x={500} y={this.props.height - 100} />
+  </g>
+)
+```
+
+Starts by rendering an axis, followed by a loop through our stack, rendering a `<BarChart>` for each, and then the `<Legend>` component neatly positioned to look good.
+
+A beautiful chart pops out.
+
+![Beautiful chart](./what-americas-want.png)
+
+## Today you learned 🧐
+
+- chroma-js exist and is amazing
+- d3-legend for easy legends
+- d3blackbox still saving the day
+- D3 stack generator
+
+🤓
