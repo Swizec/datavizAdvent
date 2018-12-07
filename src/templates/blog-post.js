@@ -9,7 +9,6 @@ import MDXRenderer from 'gatsby-mdx/mdx-renderer'
 import ReactPlayer from 'react-player'
 import styled from 'styled-components'
 import Footer from '../components/Footer'
-import Header from '../components/Header'
 import PostImage from '../components/PostImage'
 import DripEmail from '../components/DripEmail'
 import SocialShare from '../components/SocialShare'
@@ -107,7 +106,6 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={location}>
         <Wrapper>
-          <Header />
         <PostImage 
           cover={<img src={imageURL}/>}
         />
@@ -121,7 +119,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={<img src={imageURL}/>} />
+                <meta itemprop="image" content={<img src={node.frontmatter.image && node.frontmatter.image.publicURL}/>} />
 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
@@ -136,7 +134,7 @@ class BlogPostTemplate extends React.Component {
                     data.site.siteMetadata.title
                   }`}
                 />
-                <meta property="og:image" content={<img src={imageURL}/>} />
+                <meta property="og:image" content={<img src={node.frontmatter.image && node.frontmatter.image.publicURL}/>} />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
@@ -144,7 +142,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={<img src={imageURL}/>} />
+                <meta name="twitter:image" content={<img src={node.frontmatter.image && node.frontmatter.image.publicURL}/>} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};

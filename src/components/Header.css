@@ -2,7 +2,6 @@
     width: 100%;
     position: absolute;
     z-index: 2;
-    background-size: contain;
 }
 
 .HeaderGroup {
@@ -11,8 +10,8 @@
     padding: 0rem 2rem 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    align-items: left;
-    justify-items: left;
+    align-items: center;
+    justify-items: center;
     grid-gap: 2rem;
     grid-template-areas:
     'logo . A1 A2';
