@@ -101,7 +101,7 @@ class BlogPostTemplate extends React.Component {
     const { previous, next } = this.props.pageContext
 
     const imageURL =
-      (frontmatter.image && frontmatter.image.publicURL) ||
+      
       'https://reactviz.holiday/reactvizholiday.png'
 
     return (
@@ -113,7 +113,7 @@ class BlogPostTemplate extends React.Component {
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
-               
+                title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
                 <meta
                   itemprop="name"
