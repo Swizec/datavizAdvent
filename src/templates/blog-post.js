@@ -100,8 +100,9 @@ class BlogPostTemplate extends React.Component {
 
     const { previous, next } = this.props.pageContext
 
-      const imageURL =
-        (frontmatter.image && frontmatter.image.publicURL) 
+    const imageURL =
+      (frontmatter.image && frontmatter.image.publicURL) ||
+      'https://reactviz.holiday/reactvizholiday.png'
 
     return (
       <Layout location={location}>
@@ -119,7 +120,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={imageURL} />
+                <meta itemprop="image" content={`${imageURL}`} />
 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
@@ -134,7 +135,7 @@ class BlogPostTemplate extends React.Component {
                     data.site.siteMetadata.title
                   }`}
                 />
-                <meta property="og:image" content={imageURL} />
+                <meta property="og:image" content={`${imageURL}`} />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
@@ -142,7 +143,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={imageURL} />
+                <meta name="twitter:image" content={`${imageURL}`} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};
