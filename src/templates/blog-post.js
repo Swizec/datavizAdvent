@@ -2,7 +2,6 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import { Link } from 'gatsby'
-
 import Layout from '../components/Layout'
 import PostHeader from '../components/PostHeader'
 import MDXRenderer from 'gatsby-mdx/mdx-renderer'
@@ -98,10 +97,10 @@ class BlogPostTemplate extends React.Component {
     const gotVideo = frontmatter.videoId !== 'NA',
       gotSandbox = frontmatter.codesandboxId !== 'NA'
 
-    const { previous, next } = this.props.pageContext
+    const { previous, next } = this.props.pageContext,
 
-    const imageURL =
-      (frontmatter.image && frontmatter.image.publicURL) ||
+    imageURL =
+      (frontmatter.image) ||
       'https://reactviz.holiday/reactvizholiday.png'
 
     return (
@@ -113,12 +112,12 @@ class BlogPostTemplate extends React.Component {
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
-                
+                title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
               // Google / Search Engine Tags
                 <meta
                   itemprop="name"
-                  
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
                 <meta itemprop="image" content={`${imageURL}`} />
@@ -127,11 +126,15 @@ class BlogPostTemplate extends React.Component {
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
-                  
+                  property={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
+                  }`}
                 />
                 <meta
                   property="og:description"
-                  
+                  content={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
+                  }`}
                 />
                 <meta property="og:image" content={`${imageURL}`} />
               
@@ -139,7 +142,7 @@ class BlogPostTemplate extends React.Component {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
                   name="twitter:title"
-                  
+                  content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
                 <meta name="twitter:image" content={`${imageURL}`} />
