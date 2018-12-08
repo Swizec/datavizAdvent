@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   border-radius: 20px 20px 0px 0px ;
   }
   .CardBottom {
+    border-top: 5px solid gold;
     border-radius: 0 0 20px 20px ;
     background-color: #420000;
     background-image: linear-gradient(45deg, #420000 39%, #a30000 100%);
