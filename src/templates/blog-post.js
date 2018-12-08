@@ -101,11 +101,11 @@ class BlogPostTemplate extends React.Component {
     const { previous, next } = this.props.pageContext
 
     const imageURL =
-      (frontmatter.image.publicURL) ||
+      (frontmatter.image && frontmatter.image.publicURL) ||
       'https://reactviz.holiday/reactvizholiday.png'
 
     return (
-      <Layout location={location}>
+      
         <Wrapper>
         <PostImage 
           cover={<img src={imageURL}/>}
@@ -234,7 +234,7 @@ class BlogPostTemplate extends React.Component {
           </WrapperNav>
           <Footer />
         </Wrapper>
-      </Layout>
+      
     )
   }
 }
