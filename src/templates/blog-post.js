@@ -113,37 +113,37 @@ class BlogPostTemplate extends React.Component {
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
-                title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                
               >
+              // Google / Search Engine Tags
                 <meta
                   itemprop="name"
-                  content={`ReactVizHoliday: ${frontmatter.title}`}
+                  
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
                 <meta itemprop="image" content={`${imageURL}`} />
 
+              // Facebook Meta Tags 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
-                  property={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  
                 />
                 <meta
                   property="og:description"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  
                 />
                 <meta property="og:image" content={`${imageURL}`} />
-
+              
+              // Twitter Meta Tags -->
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
                   name="twitter:title"
-                  content={`ReactVizHoliday: ${frontmatter.title}`}
+                  
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
                 <meta name="twitter:image" content={`${imageURL}`} />
+                
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};
