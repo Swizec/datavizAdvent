@@ -105,7 +105,7 @@ class BlogPostTemplate extends React.Component {
       'https://reactviz.holiday/reactvizholiday.png'
 
     return (
-      
+      <Layout location={location}>
         <Wrapper>
         <PostImage 
           cover={<img src={imageURL}/>}
@@ -113,7 +113,7 @@ class BlogPostTemplate extends React.Component {
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
-                title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+               
               >
                 <meta
                   itemprop="name"
@@ -234,7 +234,7 @@ class BlogPostTemplate extends React.Component {
           </WrapperNav>
           <Footer />
         </Wrapper>
-      
+      </Layout>
     )
   }
 }
