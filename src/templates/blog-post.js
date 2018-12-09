@@ -27,7 +27,6 @@ const Wrapper = styled.div`
   .HeadTop {
     text-align: center;
     margin: 0 auto;
-    
   }
   .player-wrapper {
     position: relative;
@@ -106,9 +105,7 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={location}>
         <Wrapper>
-        <PostImage 
-          cover={<img src={imageURL}/>}
-        />
+          <PostImage cover={<img src={imageURL} />} />
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
@@ -120,7 +117,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={`${imageURL}`} />
+                <meta itemprop="image" content={imageURL} />
 
               // Facebook Meta Tags 
                 <meta property="og:url" content={location} />
@@ -133,7 +130,7 @@ class BlogPostTemplate extends React.Component {
                   property="og:description"
                   content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
                 />
-                <meta property="og:image" content={`${imageURL}`} />
+                <meta property="og:image" content={imageURL} />
               
               // Twitter Meta Tags -->
                 <meta name="twitter:card" content="summary_large_image" />
@@ -142,8 +139,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={`${imageURL}`} />
-                
+                <meta name="twitter:image" content={imageURL} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};
@@ -198,7 +194,7 @@ class BlogPostTemplate extends React.Component {
                 <Codesandbox
                   src={`https://codesandbox.io/embed/${
                     frontmatter.codesandboxId
-                  }`}
+                  }?view=preview`}
                   class="embedded-codesandbox"
                   sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
                 />
@@ -214,8 +210,8 @@ class BlogPostTemplate extends React.Component {
               </MDXRenderer>
             </div>
           </div>
-            <DripEmail />
-            <SocialShare />
+          <DripEmail />
+          <SocialShare />
           <WrapperNav>
             {previous ? (
               <div className="Prev">

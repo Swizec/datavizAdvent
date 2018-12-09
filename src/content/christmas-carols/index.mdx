@@ -1,11 +1,269 @@
 ---
 title: Christmas carols and their words
 date: '2018-12-07'
-videoId: NA
-codesandboxId: NA
+videoId: x141XrIuP50
+codesandboxId: 2nv1j4mwr
 dataset: christmas_carols_data.csv
 intro: Christmas carols are a time honored tradition. Draw a heatmap of their most popular words.
-image: "./AdventLogo.png"
+image: './christmas-carols.png'
 ---
 
-Original idea from [Drew Conway](https://github.com/drewconway/ZIA/tree/master/R/Very%20Data%20Christmas)
+import TweetEmbed from 'react-tweet-embed'
+
+Building these word clouds kicked my ass. Even had to ask the three wise men for help.
+
+<TweetEmbed id="1071456819107622913" options={{ conversation: 'none' }} />
+
+Turns out that even though `useMemo` is for memoizing heavy computation, this does not apply when said computation is asynchronous. You have to use `useEffect`.
+
+At least until suspense and async comes in early 2019.
+
+Something about always returning the same Promise, which confuses `useMemo` and causes an infinite loop when it calls `setState` on every render. That was fun.
+
+There's some computation that goes into this one to prepare the dataset. Let's start with that.
+
+## Preparing word cloud data
+
+Our data begins life as a flat text file.
+
+```
+Angels From The Realm Of Glory
+
+Angels from the realms of glory
+Wing your flight over all the earth
+Ye, who sang creations story
+Now proclaim Messiah's birth
+Come and worship, come and worship
+Worship Christ the newborn King
+Shepherds in the fields abiding
+Watching over your flocks by night
+God with man is now residing
+```
+
+And so on. Each carol begins with a title and an empty line. Then there's a bunch of lines followed by an empty line.
+
+We load this file with `d3.text`, pass it into `parseText`, and save it to a `carols` variable.
+
+```javascript
+const [carols, setCarols] = useState(null)
+
+useEffect(
+  () => {
+    d3.text('/carols.txt')
+      .then(parseText)
+      .then(setCarols)
+  },
+  [!carols]
+)
+```
+
+Typical `useEffect`/`useState` dance. We run the effect if state isn't set, the effect fetches some data, sets the state.
+
+Parsing that text into individual carols looks like this
+
+```javascript
+function takeUntilEmptyLine(text) {
+  let result = []
+
+  for (
+    let row = text.shift();
+    row && row.trim().length > 0;
+    row = text.shift()
+  ) {
+    result.push(row.trim())
+  }
+
+  return result
+}
+
+export default function parseText(text) {
+  text = text.split('\n')
+
+  let carols = { 'All carols': [] }
+
+  while (text.length > 0) {
+    const title = takeUntilEmptyLine(text)[0]
+    const carol = takeUntilEmptyLine(text)
+
+    carols[title] = carol
+    carols['All carols'] = [...carols['All carols'], ...carol]
+  }
+
+  return carols
+}
+```
+
+Our algorithm is based on a `takeUntil` function. It takes lines from our text until some condition is met.
+
+Basically:
+
+1. Split text into lines
+2. Run algorithm until you run out of lines
+3. Take lines until you encounter an empty line
+4. Assume the first line is a title
+5. Take lines until you encounter an empty line
+6. This is your carol
+7. Save title and carol in a dictionary
+8. Splat carrol into the `All carols` blob as well
+
+We'll use that last one for a joint word cloud of all Christmas carols.
+
+## Calculating word clouds with d3-cloud
+
+With our carols in hand, we can build a word cloud. We'll use the wonderful [d3-cloud](https://github.com/jasondavies/d3-cloud) library to handle layouting for us. Our job is to feed it data with counted word frequencies.
+
+Easiest way to count words is with a loop
+
+```javascript
+function count(words) {
+  let counts = {}
+
+  for (let w in words) {
+    counts[words[w]] = (counts[words[w]] || 0) + 1
+  }
+
+  return counts
+}
+```
+
+Goes over a list of words, collects them in a dictionary, and does `+1` every time.
+
+We use that to feed data into `d3-cloud`.
+
+```javascript
+function createCloud({ words, width, height }) {
+  return new Promise(resolve => {
+    const counts = count(words)
+
+    const fontSize = d3
+      .scaleLog()
+      .domain(d3.extent(Object.values(counts)))
+      .range([5, 75])
+
+    const layout = d3Cloud()
+      .size([width, height])
+      .words(
+        Object.keys(counts)
+          .filter(w => counts[w] > 1)
+          .map(word => ({ word }))
+      )
+      .padding(5)
+      .font('Impact')
+      .fontSize(d => fontSize(counts[d.word]))
+      .text(d => d.word)
+      .on('end', resolve)
+
+    layout.start()
+  })
+}
+```
+
+Our `createCloud` function gets a list of words, a width, and a height. Returns a promise because d3-cloud is asynchronous. Something about how long it might take to iteratively come up with a good layout for all those words. It's a hard problem. 🤯
+
+(that's why we're not solving it ourselves)
+
+We get the counts, create a `fontSize` logarithmic scale for sicing, and invoke the D3 cloud.
+
+That takes a `size`, a list of words without single occurrences turned into `{ word: 'bla' }` objects, some padding, a font size method using our `fontSize` scale, a helper to get the word and when it's all done the `end` event resolves our promise.
+
+When that's set up we start the layouting process with `layout.start()`
+
+## Animating words
+
+Great. We've done the hard computation, time to start rendering.
+
+We'll need a self-animating `<Word>` componenent that transitions itself into a new position and angle. CSS transitions can't do that for us, so we'll have to use D3 transitions.
+
+```javascript
+class Word extends React.Component {
+  ref = React.createRef()
+  state = { transform: this.props.transform }
+
+  componentDidUpdate() {
+    const { transform } = this.props
+    d3.select(this.ref.current)
+      .transition()
+      .duration(500)
+      .attr('transform', this.props.transform)
+      .on('end', () => this.setState({ transform }))
+  }
+
+  render() {
+    const { style, children } = this.props,
+      { transform } = this.state
+
+    return (
+      <text
+        transform={transform}
+        textAnchor="middle"
+        style={style}
+        ref={this.ref}
+      >
+        {children}
+      </text>
+    )
+  }
+}
+```
+
+We're using my [Declarative D3 transitions with React](https://swizec.com/blog/declarative-d3-transitions-react/swizec/8323) approach to make it work. You can read about it in detail on my main blog.
+
+In a nutshell:
+
+1. Store the transitioning property in state
+2. State becomes a sort of staging area
+3. Take control of rendering in `componentDidUpdate` and run a transition
+4. Update state after transition extends
+5. Render `text` from state
+
+The result are words that declaratively transition into their new positions. Try it out.
+
+## Putting it all together
+
+Last step in the puzzle is that `<WordCloud>` component that was giving me so much trouble and kept hanging my browser. It looks like this
+
+```javascript
+export default function WordCloud({ words, forCarol, width, height }) {
+  const [cloud, setCloud] = useState(null)
+  useEffect(
+    () => {
+      createCloud({ words, width, height }).then(setCloud)
+    },
+    [forCarol, width, height]
+  )
+
+  const colors = chroma.brewer.dark2
+
+  return (
+    cloud && (
+      <g transform={`translate(${width / 2}, ${height / 2})`}>
+        {cloud.map((w, i) => (
+          <Word
+            transform={`translate(${w.x}, ${w.y}) rotate(${w.rotate})`}
+            style={{
+              fontSize: w.size,
+              fontFamily: 'impact',
+              fill: colors[i % colors.length],
+            }}
+            key={w.word}
+          >
+            {w.word}
+          </Word>
+        ))}
+      </g>
+    )
+  )
+}
+```
+
+A combination of `useState` and `useEffect` makes sure we run the cloud generating algorithm every time we pick a different carol to show, or change the size of our word cloud. When the effect runs, it sets state in the `cloud` constant.
+
+This triggers a render and returns a grouping element with its center in the center of the page. `d3-cloud` creates coordinates spiraling around a center.
+
+Loop through the cloud data, render a `<Word>` component for each word. Set a transform, a bit of style, the word itself.
+
+And voila, a declaratively animated word cloud with React and D3 ✌️
+
+<TweetEmbed id="1071468363740639232" />
+
+Original data from [Drew Conway](https://github.com/drewconway/ZIA/tree/master/R/Very%20Data%20Christmas)
