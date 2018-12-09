@@ -100,7 +100,7 @@ class BlogPostTemplate extends React.Component {
     const { previous, next } = this.props.pageContext,
 
     imageURL =
-      (frontmatter.image.publicURL && frontmatter.image.publicURL) ||
+      (frontmatter.image && frontmatter.image.publicURL) ||
       'https://reactviz.holiday/reactvizholiday.png'
 
     return (
@@ -126,15 +126,12 @@ class BlogPostTemplate extends React.Component {
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
-                  property={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
+                  property={`${frontmatter.title} | ${data.site.siteMetadata.title
                   }`}
                 />
                 <meta
                   property="og:description"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
                 />
                 <meta property="og:image" content={`${imageURL}`} />
               
