@@ -43,8 +43,7 @@ const WrapperNav = styled.div`
   .Next {
     max-width: 200px;
     text-decoration: none;
-    background-color: #420000;
-    background-image: linear-gradient(45deg, #a30000 39%, #a30000 100%);
+    background: rgba(0, 0, 0, 0.6);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
