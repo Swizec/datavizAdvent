@@ -5,7 +5,7 @@ import Particles from 'react-particles-js'
 
 
 const Wrapper = styled.div`
-  background-color: #04081f;
+
   padding: 2rem 0;
   height: 520px;
   .content {

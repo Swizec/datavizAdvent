@@ -8,8 +8,7 @@ h3 {
   text-align: center;
 }
   .banner {
-    
-  background-color: #004230;
+  
   padding: 2rem 2rem;
   margin: 0rem 0;
   color: #fff;
@@ -52,7 +51,7 @@ const WrapperForm = styled.div`
     color: #fff;
     border: none;
     border-bottom: 2px solid gold;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.2);
 
     ::-webkit-input-placeholder {
   color: peachpuff;
