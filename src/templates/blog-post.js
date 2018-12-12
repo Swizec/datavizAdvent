@@ -2,7 +2,6 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import { Link } from 'gatsby'
-
 import Layout from '../components/Layout'
 import PostHeader from '../components/PostHeader'
 import MDXRenderer from 'gatsby-mdx/mdx-renderer'
@@ -44,8 +43,7 @@ const WrapperNav = styled.div`
   .Next {
     max-width: 200px;
     text-decoration: none;
-    background-color: #420000;
-    background-image: linear-gradient(45deg, #a30000 39%, #a30000 100%);
+    background: rgba(0, 0, 0, 0.6);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
@@ -98,9 +96,9 @@ class BlogPostTemplate extends React.Component {
       gotSandbox = frontmatter.codesandboxId !== 'NA'
 
     const { previous, next } = this.props.pageContext,
-      imageURL =
-        (frontmatter.image && frontmatter.image.publicURL) ||
-        'https://reactviz.holiday/reactvizholiday.png'
+
+    imageURL =
+      (frontmatter.image.publicURL && frontmatter.image.publicURL) 
 
     return (
       <Layout location={location}>
@@ -111,6 +109,7 @@ class BlogPostTemplate extends React.Component {
               <Helmet
                 title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
+              // Google / Search Engine Tags
                 <meta
                   itemprop="name"
                   content={`ReactVizHoliday: ${frontmatter.title}`}
@@ -118,21 +117,20 @@ class BlogPostTemplate extends React.Component {
                 <meta itemprop="description" content={frontmatter.intro} />
                 <meta itemprop="image" content={imageURL} />
 
+              // Facebook Meta Tags 
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
-                  property={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
+                  property={`${frontmatter.title} | ${data.site.siteMetadata.title
                   }`}
                 />
                 <meta
                   property="og:description"
-                  content={`${frontmatter.title} | ${
-                    data.site.siteMetadata.title
-                  }`}
+                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
                 />
                 <meta property="og:image" content={imageURL} />
-
+              
+              // Twitter Meta Tags -->
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
                   name="twitter:title"

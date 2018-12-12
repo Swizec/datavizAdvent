@@ -15,6 +15,15 @@ const Wrapper = styled.div`
     transform: translateY(-20px);
   }
   .CardTop {
+    background: rgba(255,255,255,1);
+background: -moz-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.82) 18%, rgba(237,237,237,0) 100%);
+background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(18%, rgba(246,246,246,0.82)), color-stop(100%, rgba(237,237,237,0)));
+background: -webkit-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.82) 18%, rgba(237,237,237,0) 100%);
+background: -o-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.82) 18%, rgba(237,237,237,0) 100%);
+background: -ms-linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.82) 18%, rgba(237,237,237,0) 100%);
+background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(246,246,246,0.82) 18%, rgba(237,237,237,0) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=1 );
+
     border-radius: 20px;
     width: 300px;
     height: 200px;
@@ -23,7 +32,8 @@ const Wrapper = styled.div`
     border-radius: 20px 20px 0px 0px;
   }
   .CardBottom {
-    border-radius: 0 0 20px 20px;
+    border-top: 5px solid gold;
+    border-radius: 0 0 20px 20px ;
     background-color: #420000;
     background-image: linear-gradient(45deg, #420000 39%, #a30000 100%);
 
