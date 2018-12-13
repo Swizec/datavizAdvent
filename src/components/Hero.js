@@ -5,7 +5,8 @@ import Particles from 'react-particles-js'
 
 
 const Wrapper = styled.div`
-
+  background-color: #04081f;
+background-image: linear-gradient(45deg, #04081f 33%, #0e1842 100%);
   padding: 2rem 0;
   height: 520px;
   .content {

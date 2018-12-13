@@ -5,7 +5,8 @@ const Wrapper = styled.div`
 
 `
 const WrapperFooter = styled.div`
-    background-color: #04081F;
+ background-color: #04081f;
+background-image: linear-gradient(45deg, #04081f 33%, #0e1842 100%);
 text-align: center;
 height: 100%;
 padding: 1rem 0;

@@ -8,7 +8,8 @@ h3 {
   text-align: center;
 }
   .banner {
-  
+    background-color: #004230;
+
   padding: 2rem 2rem;
   margin: 0rem 0;
   color: #fff;
