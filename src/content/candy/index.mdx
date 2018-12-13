@@ -1,9 +1,291 @@
 ---
-title: When do people buy candy?
-date: '2018-12-11'
-videoId: NA
-codesandboxId: NA
+title: When do people buy candy? 🍬
+date: '2018-12-12'
+videoId: Dn_kHCFTUP4
+codesandboxId: ov0lzxmplz
 dataset: statistic_id947149_retail-sales-of-candy-in-the-united-states-in-2018-by-week.xlsx
-intro: Candy is delicious. When do people buy it most? Draw a heatmap of days of the year. Make sure users can interact with your heatmap to find details.
-image: './AdventLogo.png'
+intro: Candy is delicious. When do people buy it most? Visualize the data in a fun way
+image: './candy.png'
 ---
+
+import TweetEmbed from 'react-tweet-embed'
+
+Did you know Americans buy `Eight hundred million dollars` worth of candy on Easter? That's crazy. Absolutely bonkers. Even the normal baseline of `$300,000,000`/week throughout the year is just staggering. 🍭
+
+What better way to visualize it than candy falling from the sky into the shape of a bar chart?
+
+![](https://i.imgur.com/z9bNPZL.gif)
+
+The basic idea behind that visualization goes like this:
+
+1. Load and parse data
+2. Scale for horizontal position
+3. Scale for vertical height
+4. Render each bar in a loop
+5. Divide height by `12`
+6. Render that many emojis
+7. Create a custom tween transition to independently animate horizontal and vertical positionioning in a declarative and visually pleasing way
+
+😛
+
+## The basics
+
+Let's start with the basics and get them out of the way. Bottom up in the Codesandbox above.
+
+```javascript
+const FallingCandy = ({ data, x = 0, y = 0, width = 600, height = 600 }) => {
+  const xScale = d3
+    .scalePoint()
+    .domain(data.map(d => d.week))
+    .range([0, width])
+  const yScale = d3
+    .scaleLinear()
+    .domain([250, d3.max(data, d => d.sales)])
+    .range([height, 0])
+
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      {data.map(d => (
+        <CandyJar
+          x={xScale(d.week)}
+          y={height}
+          height={height - yScale(d.sales)}
+          delay={d.week * Math.random() * 100}
+          type={d.special}
+          key={d.week}
+        />
+      ))}
+      <BottomAxis scale={xScale} x={0} y={height} />
+      <LeftAxis scale={yScale} x={0} y={0} />
+    </g>
+  )
+}
+```
+
+The `<FallingCandy>` component takes data, positioning, and sizing props. Creates two scales: A point scale for horizontal positioning of each column, a vertical scale for heights.
+
+Render a grouping element to position everything, walk through the data and render a `<CandyJar>` component for each entry. Candy jars need coordinates, a height, some delay for staggered animations, and a type.
+
+Type tells them which emoji to render. Makes it so we can have special harts on Valentine's day, bunnies on Easter, jack-o-lanterns on Halloween, and Christmas trees on Christmas.
+
+I know this works because when my girlfriend saw it this morning she was like _"Whaaat why so much candy on Easter?"_. Didn't even have to tell her what the emojis mean 💪
+
+We'll talk about the animation staggering later. I'll explain why it has to be random as well.
+
+## The axes
+
+Using our standard approach for axes: use [d3blackbox](https://d3blackbox.com) to render an anchor element, then take over with D3 and use an axis generator.
+
+```javascript
+const BottomAxis = d3blackbox((anchor, props) => {
+  const scale = props.scale
+  scale.domain(scale.domain().filter((_, i) => i % 5 === 0))
+
+  const axis = d3
+    .axisBottom()
+    .scale(props.scale)
+    .tickFormat(d => `wk ${d}`)
+  d3.select(anchor.current).call(axis)
+})
+
+const LeftAxis = d3blackbox((anchor, props) => {
+  const axis = d3
+    .axisLeft()
+    .scale(props.scale)
+    .tickFormat(d => `$${d} million`)
+  d3.select(anchor.current).call(axis)
+})
+```
+
+We have to filter the scale's domain for `<BottomAxis>` because point scales are ordinal. That means there's no generalized way to interpolate values in between other values, so the axis renders everything.
+
+That looks terrible. Instead, we render every 5th tick.
+
+Both axes get a custom `tickFormat` so they're easier to read.
+
+## The &lt;CandyJar>
+
+Candy jars are just columns of emojis. There's not much logic here.
+
+```javascript
+const CandyJar = ({ x, y, height, delay, type }) =>
+  d3
+    .range(height / 12)
+    .map(i => (
+      <Candy
+        x={x}
+        y={y - i * 12}
+        type={type}
+        delay={delay + i * Math.random() * 100}
+        key={i}
+      />
+    ))
+```
+
+Yes, we could have done this in the main `<FallingCandy>` component. Code feels cleaner this way.
+
+Create a counting array from zero to `height/12`, the number of emojis we need, walk through the array and render `<Candy>` components for each entry. At this point we add some more random delay. I'll tell you why in a bit.
+
+## The animated &lt;Candy> component
+
+![](https://i.imgur.com/z9bNPZL.gif)
+
+All that animation happens in the Candy component. Parent components are blissfully unaware and other than passing a `delay` prop never have to worry about the details of rendering and animation.
+
+That's the beauty of declarative code. 👌
+
+Our plan is based on my [Declarative D3 transitions with React 16.3+](https://swizec.com/blog/declarative-d3-transitions-react/swizec/8323) approach:
+
+1. Move coordinates into state
+2. Render emoji from state
+3. Run transition on `componentDidMount`
+4. Update state when transition ends
+
+We use component state as a sort of staging area for transitionable props. D3 helps us with what it does best - transitions - and React almost always knows what's going on so it doesn't get confused.
+
+Have had issues in the past with manipulating the DOM and React freaking out at me.
+
+```javascript
+class Candy extends React.Component {
+  state = {
+    x: Math.random() * 600,
+    y: Math.random() * -50,
+  }
+  candyRef = React.createRef()
+
+  componentDidMount() {
+    const { delay } = this.props
+
+    const node = d3.select(this.candyRef.current)
+
+    node
+      .transition()
+      .duration(1500)
+      .delay(delay)
+      .ease(d3.easeLinear)
+      .attrTween('y', candyYTween(this.state.y, this.props.y))
+      .attr('x', this.props.x)
+      .on('end', () => this.setState({ y: this.props.y }))
+  }
+
+  get emoji() {
+    // return emoji based on this.props.type
+  }
+
+  render() {
+    const { x, y } = this.state
+
+    return (
+      <text x={x} y={y} style={{ fontSize: '12px' }} ref={this.candyRef}>
+        {this.emoji}
+      </text>
+    )
+  }
+}
+```
+
+We initate the `<Candy>` component in a random location off screen. Too high up to be seen, somewhere on the visualization horizontally. Doesn't matter where.
+
+I'll show you why random soon.
+
+We create a ref as well. D3 will need that to get access to the DOM node.
+
+Then we have `componentDidMount` which is where the transition happens.
+
+### Separate, yet parallel, transitions for each axis
+
+```javascript
+  componentDidMount() {
+    const { delay } = this.props
+
+    const node = d3.select(this.candyRef.current)
+
+    node
+      .transition()
+      .duration(1500)
+      .delay(delay)
+      .ease(d3.easeLinear)
+      .attrTween('y', candyYTween(this.state.y, this.props.y))
+      .attr('x', this.props.x)
+      .on('end', () => this.setState({ y: this.props.y }))
+  }
+```
+
+Key logic here is that we `d3.select()` the candy node, start a transition on it, define a duration, pass the delay from our props, _disable_ easing functions, and specify what's transitioning.
+
+The tricky bit was figuring out how to run two different transitions in parallel.
+
+D3 doesn't do concurrent transitions, you see. You have to run **a** transition, then the next one. Or you have to cancel the first transition and start a new one.
+
+Of course you _can_ run concurrent transitions on multiple attributes. But only if they're both the same transition.
+
+In our case we wanted to have candy bounce vertically and fly linearly in the horizontal direction. This was tricky.
+
+I mean I guess it's okay with a bounce in both directions? 🧐
+
+![](https://i.imgur.com/L00eWnG.gif)
+
+No that's weird.
+
+### You can do it with a tween
+
+First you have to understand some basics of how transitions and easing functions work.
+
+They're based on interpolators. An interpolator is a function that calculates in-between values between a start and end value based on a `t` argument. When `t=0`, you get the initial value. When `t=1` you get the end value.
+
+```javascript
+const interpolate = d3.interpolate(0, 100)
+
+interpolate(0) // 0
+interpolate(0.5) // 50
+interpolate(1) // 1
+```
+
+Something like that in a nutshell. D3 supports much more complex interpolations than that, but numbers are all we need right now.
+
+Easing functions manipulate how that `t` parameter behaves. Does it go from `0` to `1` linearly? Does it bounce around? Does it accelerate and slow down?
+
+When you start a transition with `easeLinear` and `attr('x', this.props.x)` you are essentially creating an interpolator from the current value of `x` to your desired value, and the `t` parameter changes by an equal amount on every tick of the transition.
+
+If you have `1500` milliseconds to finish the transition (your duration), that's 90 frames at 60fps. Means your `t` adds 0.01 on every tick of the animation.
+
+We can use that to create a custom tween for the vertical coordinate, `y`.
+
+```javascript
+function candyYTween(oldY, newY) {
+  const interpolator = d3.interpolate(oldY, newY)
+  return function() {
+    return function(t) {
+      return interpolator(d3.easeBounceOut(t))
+    }
+  }
+}
+```
+
+`candyYTween` takes the initial and new coordinates, creates an interpolator, and returns a function. This function returns a parametrized function that drives our transition. For every `t` we return the value of our `interpolator` after passing it through the `easeBounceOut` easing function.
+
+We're basically taking a linear parameter, turning it into a bouncy paramater, and passing _that_ into our interpolator. This creates a bouncy effect without affecting the `x` coordinate in the other transition.
+
+I don't know why we need the double function wrap, but it didn't work otherwise.
+
+## So why all the randomness?
+
+Randomness makes our visualization look better. More natural.
+
+Here's what it looks like without any `Math.random()`
+
+<TweetEmbed id="1073285327282876416" options={{ conversation: 'none' }} />
+
+Randomness on the CandyJar level.
+
+<TweetEmbed id="1073285329237401600" options={{ conversation: 'none' }} />
+
+Randomness on the CandyJar _and_ Candy level.
+
+<TweetEmbed id="1073285332555194369" options={{ conversation: 'none' }} />
+
+Randomness in the start position as well.
+
+<TweetEmbed id="1073285334291501056" options={{ conversation: 'none' }} />
+
+You decide which looks best ✌️
