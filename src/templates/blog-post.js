@@ -2,7 +2,6 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import { graphql } from 'gatsby'
 import { Link } from 'gatsby'
-import { withPrefix } from 'gatsby'
 
 import Layout from '../components/Layout'
 import PostHeader from '../components/PostHeader'
@@ -100,12 +99,12 @@ class BlogPostTemplate extends React.Component {
     const { previous, next } = this.props.pageContext,
 
     imageURL =
-      (frontmatter.image && frontmatter.image.publicURL) 
+      (frontmatter.image && frontmatter.image.publicURL.src) 
 
     return (
       <Layout location={location}>
         <Wrapper>
-          <PostImage cover={<img src={withPrefix(imageURL)} />} />
+          <PostImage cover={<img src={imageURL} />} />
           <div className="Middle">
             <div className="HeadTop">
               <Helmet
@@ -117,7 +116,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
-                <meta itemprop="image" content={withPrefix(imageURL)} />
+                <meta itemprop="image" content={imageURL} />
 
               // Facebook Meta Tags 
                 <meta property="og:url" content={location} />
@@ -130,7 +129,7 @@ class BlogPostTemplate extends React.Component {
                   property="og:description"
                   content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
                 />
-                <meta property="og:image" content={withPrefix(imageURL)} />
+                <meta property="og:image" content={imageURL} />
               
               // Twitter Meta Tags -->
                 <meta name="twitter:card" content="summary_large_image" />
@@ -139,7 +138,7 @@ class BlogPostTemplate extends React.Component {
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta name="twitter:description" content={frontmatter.intro} />
-                <meta name="twitter:image" content={withPrefix(imageURL)} />
+                <meta name="twitter:image" content={imageURL} />
                 <script type="text/javascript">{`
                   var _dcq = _dcq || [];
                   var _dcs = _dcs || {};

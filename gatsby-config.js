@@ -5,7 +5,7 @@ module.exports = {
         description: 'A new tiny data visualization for every day of the 2018 Advent',
         siteUrl: 'https://gatsbyjs.github.io/gatsby-starter-blog/',
     },
-    pathPrefix: '/blog',
+    pathPrefix: '/content',
     plugins: [{
             resolve: `gatsby-plugin-styled-components`,
             options: {
