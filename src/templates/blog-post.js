@@ -99,7 +99,7 @@ class BlogPostTemplate extends React.Component {
     const { previous, next } = this.props.pageContext,
 
     imageURL =
-      (frontmatter.image && frontmatter.slug) 
+      (frontmatter.image && frontmatter.image.publicURL) 
 
     return (
       <Layout location={location}>
