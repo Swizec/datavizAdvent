@@ -96,9 +96,7 @@ class BlogPostTemplate extends React.Component {
       gotSandbox = frontmatter.codesandboxId !== 'NA'
 
     const { previous, next } = this.props.pageContext,
-
-    imageURL =
-      (frontmatter.image.publicURL && frontmatter.image.publicURL) 
+      imageURL = frontmatter.image.publicURL && frontmatter.image.publicURL
 
     return (
       <Layout location={location}>
@@ -109,28 +107,29 @@ class BlogPostTemplate extends React.Component {
               <Helmet
                 title={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
               >
-              // Google / Search Engine Tags
+                // Google / Search Engine Tags
                 <meta
                   itemprop="name"
                   content={`ReactVizHoliday: ${frontmatter.title}`}
                 />
                 <meta itemprop="description" content={frontmatter.intro} />
                 <meta itemprop="image" content={imageURL} />
-
-              // Facebook Meta Tags 
+                // Facebook Meta Tags
                 <meta property="og:url" content={location} />
                 <meta property="og:type" content="website" />
                 <meta
-                  property={`${frontmatter.title} | ${data.site.siteMetadata.title
+                  property={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
                   }`}
                 />
                 <meta
                   property="og:description"
-                  content={`${frontmatter.title} | ${data.site.siteMetadata.title}`}
+                  content={`${frontmatter.title} | ${
+                    data.site.siteMetadata.title
+                  }`}
                 />
                 <meta property="og:image" content={imageURL} />
-              
-              // Twitter Meta Tags -->
+                // Twitter Meta Tags -->
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta
                   name="twitter:title"
@@ -159,7 +158,6 @@ class BlogPostTemplate extends React.Component {
                 <noscript>
                   {`<img src="https://api.simpleanalytics.io/hello.gif" alt="" />`}
                 </noscript>
-
                 <html lang="en" />
               </Helmet>
               <PostHeader postdate={frontmatter.date} />
@@ -179,12 +177,14 @@ class BlogPostTemplate extends React.Component {
 
             <Lead>{frontmatter.intro}</Lead>
 
-            <Lead>
-              <strong>Dataset:</strong>{' '}
-              <a href={`/datasets/${frontmatter.dataset}`}>
-                Download dataset 🗳{' '}
-              </a>
-            </Lead>
+            {frontmatter.dataset !== 'NA' ? (
+              <Lead>
+                <strong>Dataset:</strong>{' '}
+                <a href={`/datasets/${frontmatter.dataset}`}>
+                  Download dataset 🗳{' '}
+                </a>
+              </Lead>
+            ) : null}
 
             {gotSandbox ? (
               <React.Fragment>
@@ -199,7 +199,9 @@ class BlogPostTemplate extends React.Component {
               </React.Fragment>
             ) : null}
 
-            {!gotSandbox ? <SolutionBlock date={frontmatter.date} /> : null}
+            {!gotSandbox && !gotVideo ? (
+              <SolutionBlock date={frontmatter.date} />
+            ) : null}
 
             <div>
               <h2>How it works ⚙️</h2>

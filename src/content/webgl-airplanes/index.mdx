@@ -1,0 +1,238 @@
+---
+title: Let's build a real-time WebGL map of all airplanes
+date: '2018-12-20'
+videoId: Q45fUBkp_0M
+codesandboxId: NA
+dataset: NA
+intro: Uber has built a cool suite of data visualization tools for WebGL. Let's explore with a real-time dataset of global airplane positions.
+image: './webgl-airplanes-map.png'
+---
+
+import TweetEmbed from 'react-tweet-embed'
+
+Giving up on [luma.gl](https://reactviz.holiday/lumagl-pt1/) as too low level, we tried something else: [Deck.gl](http://deck.gl). Same suite of WebGL React tools from Uber but higher level and therefore more fun.
+
+Of course Deck.gl is built for maps so we had to make a map. What better way to have fun with a map than drawing live positions of all airplanes in the sky?
+
+All six thousand of them. Sixty times per second.
+
+Yes we can! 💪
+
+This is the plan:
+
+1. Fetch data from [OpenSky](https://opensky-network.org)
+2. Render map with [react-map-gl](https://github.com/uber/react-map-gl)
+3. Overlay a Deck.gl [IconLayer](http://deck.gl/#/documentation/deckgl-api-reference/layers/icon-layer)
+4. Predict each airplane's position on the next Fetch
+5. Interpolate positions 60 times per second
+6. Update and redraw
+
+Out goal is to create a faux live map of airplane positions. We can fetch real positions every 10 seconds per OpenSky usage policy.
+
+You can see the [full code on GitHub](https://github.com/Swizec/webgl-airplanes-map). No Codesandbox today because it makes my computer struggle when WebGL is involved.
+
+<TweetEmbed id="1076067452038115328" options={{ conversation: 'none' }} />
+
+See the airplanes in your browser 👉 [click me 🛩](https://create-react-app-gsqfy1eaq.now.sh)
+
+## Fetch data from OpenSky
+
+OpenSky is a receiver network which continuously collects air traffic surveillance data. They keep it for forever and make it available via an API.
+
+As an anon user you can get real-time data of all the world's airplanes current positions every 10 seconds. With some finnagling you can get historic data, super real-time stuff, and so on. We don't need any of that.
+
+We `fetchData` in `componentDidMount`. Parse each entry into an object, update local state, and start the animation. Also schedule the next fetch.
+
+```javascript
+componentDidMount() {
+    this.fetchData();
+}
+
+fetchData = () => {
+    d3.json("https://opensky-network.org/api/states/all").then(
+        ({ states }) =>
+            this.setState(
+                {
+                    // from https://opensky-network.org/apidoc/rest.html#response
+                    airplanes: states.map(d => ({
+                        callsign: d[1],
+                        longitude: d[5],
+                        latitude: d[6],
+                        velocity: d[9],
+                        altitude: d[13],
+                        origin_country: d[2],
+                        true_track: -d[10],
+                        interpolatePos: d3.geoInterpolate(
+                            [d[5], d[6]],
+                            destinationPoint(
+                                d[5],
+                                d[6],
+                                d[9] * this.fetchEverySeconds,
+                                d[10]
+                            )
+                        )
+                    }))
+                },
+                () => {
+                    this.startAnimation();
+                    setTimeout(
+                        this.fetchData,
+                        this.fetchEverySeconds * 1000
+                    );
+                }
+            )
+    );
+};
+```
+
+`d3.json` fetches JSON data from a URL, returns a promise. We map through the data and assign indexes to representative object keys. Makes the other code easier to read.
+
+In the `setState` callback, we start the animation and use a `setTimeout` to call `fetchData` again in 10 seconds. More about teh animation in a bit.
+
+## Render map with react-map-gl
+
+Turns out rendering a map with Uber's react-map-gl is really easy. The library does everything for you.
+
+```javascript
+import { StaticMap } from 'react-map-gl'
+import DeckGL, { IconLayer } from "deck.gl";
+
+// Set your mapbox access token here
+const MAPBOX_ACCESS_TOKEN = '<your token>'
+
+// Initial viewport settings
+const initialViewState = {
+  longitude: -122.41669,
+  latitude: 37.7853,
+  zoom: 5,
+  pitch: 0,
+  bearing: 0,
+}
+
+// ...
+
+<DeckGL
+    initialViewState={initialViewState}
+    controller={true}
+    layers={layers}
+>
+    <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
+</DeckGL>
+```
+
+That is all.
+
+You need to create a Mapbox account and get your token, the `initialViewState` I copied from Uber's docs. It points to San Francisco.
+
+In the render method you then return `<DeckGL` which sets up the layering stuff, and plop a `<StaticMap>` inside. This gives you pan and zoom behavior out of the box. I'm sure with some twiddling you could get cool views and rotations and all sorts of 3D stuff.
+
+I say that because I've seen pics in Uber docs :P
+
+## Overlay a Deck.gl IconLayer
+
+That `layers` prop needs a list of layers. You're meant to create a new copy on every render, but internally Deck.gl promises to keep things memoized and figure out a minimal set of changes necessary. How they do that I don't know and as long as it works it doesn't really matter how.
+
+We configure the icon layer like this:
+
+```javascript
+import Airplane from './airplane-icon.jpg'
+
+const layers = [
+  new IconLayer({
+    id: 'airplanes',
+    data: this.state.airplanes,
+    pickable: false,
+    iconAtlas: Airplane,
+    iconMapping: {
+      airplane: {
+        x: 0,
+        y: 0,
+        width: 512,
+        height: 512,
+      },
+    },
+    sizeScale: 20,
+    getPosition: d => [d.longitude, d.latitude],
+    getIcon: d => 'airplane',
+    getAngle: d => 45 + (d.true_track * 180) / Math.PI,
+  }),
+]
+```
+
+We name it `airplanes` because it's showing airplanes, pass in our data, and define the airplane icon. `iconAtlas` is a sprite and the mapping specifies which parts of the image map to which name. With just one icon in the image that's pretty quick.
+
+We use `getPosition` to fetch longitude and latitude from each airplane and pass it to the drawing layer. `getIcon` specifies that we're rendering the `airplane` icon and `getAngle` rotates everything first by 45 degrees because our icon is weird, and then by the direction of the airplane from our data.
+
+`true_track` is the airplane's bearing in radians so we transform it to degrees with some math.
+
+![](./airplane-icon.png)
+
+## Predict airplanes' next position
+
+Predicting each airplane's position 10 seconds from now is ... mathsy. Positions are in latitudes and longitudes, velocities are in meters per second.
+
+I'm not so great with spherical euclidean maths so I borrowed the solution from [StackOverflow](https://stackoverflow.com/questions/19352921/how-to-use-direction-angle-and-speed-to-calculate-next-times-latitude-and-longi) and made some adjustments to fit our arguments.
+
+We use that to create a `d3.geoInterpolate` interpolator between the start and end point. That enables us to feed in numbers between 0 and 1 and get airplane positions at specific moments in time.
+
+```javascript
+interpolatePos: d3.geoInterpolate(
+  [d[5], d[6]],
+  destinationPoint(d[5], d[6], d[9] * this.fetchEverySeconds, d[10])
+)
+```
+
+Gobbledygook. Almost as bad as the [destinationPoint function code](https://github.com/Swizec/webgl-airplanes-map/blob/master/src/destinationPoint.js)
+
+## Interpolate and redraw
+
+With that interpolator in hand, we can start our animation.
+
+```javascript
+currentFrame = null
+timer = null
+
+startAnimation = () => {
+  if (this.timer) {
+    this.timer.stop()
+  }
+  this.currentFrame = 0
+  this.timer = d3.timer(this.animationFrame)
+}
+
+animationFrame = () => {
+  let { airplanes } = this.state
+  airplanes = airplanes.map(d => {
+    const [longitude, latitude] = d.interpolatePos(
+      this.currentFrame / this.framesPerFetch
+    )
+    return {
+      ...d,
+      longitude,
+      latitude,
+    }
+  })
+  this.currentFrame += 1
+  this.setState({ airplanes })
+}
+```
+
+We use a `d3.timer` to run our `animationFrame` function 60 times per second. Or every `requestAnimationFrame`. That's all internal and D3 figures out the best option.
+
+Also gotta make sure to stop any existing timers when running a new one :)
+
+The `animationFrame` method itself maps through the airplanes and creates a new list. On each iteration we copy over the whole datapoint and use the interpolator we defined earlier to calculate the new position.
+
+To get numbers from 0 to 1 we try to predict how many frames we're gonna render and keep track of which frame we're at. So 0/60 gives 0, 10/60 gives 0.16, 60/60 gives 1 etc. The interpolator takes this and returns geospatial positions along that path.
+
+Of course this can't take into account any changes in direction the airplane might make.
+
+Updating component state triggers a re-render.
+
+## And that's cool
+
+What I find really cool about all this is that even though we're copying and recreating and recalculating and ultimately redrawing some 6000 airplanes it works smoothly. Because WebGL is more performant than I ever dreamed possible.
+
+We could improve performance further by moving this animation out of React state and redraw into vertex shaders but that's hard and turns out we don't have to.
+
+<TweetEmbed id="1076067452038115328" options={{ conversation: 'none' }} />
