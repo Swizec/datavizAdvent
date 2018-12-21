@@ -65,6 +65,7 @@
         "start": "npm run develop",
         "build": "gatsby build",
         "deploy": "gatsby build --prefix-paths && cd public && now && cd ..",
-        "fix-semi": "eslint --quiet --ignore-pattern node_modules --ignore-pattern public --parser babel-eslint --no-eslintrc --rule '{\"semi\": [2, \"never\"], \"no-extra-semi\": [2]}' --fix gatsby-node.js"
+        "fix-semi": "eslint --quiet --ignore-pattern node_modules --ignore-pattern public --parser babel-eslint --no-eslintrc --rule '{\"semi\": [2, \"never\"], \"no-extra-semi\": [2]}' --fix gatsby-node.js",
+        "now-build": "npm run build"
     }
 }

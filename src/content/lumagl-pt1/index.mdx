@@ -1,0 +1,82 @@
+---
+title: Explore Uber's WebGL dataviz libraries
+date: '2018-12-18'
+videoId: hwIy2dYe6hc
+codesandboxId: kkr948o597
+dataset: ugr-sankey-openspending.json
+intro: Uber has built a cool suite of data visualization tools for WebGL. Let's explore
+image: './lumagl.png'
+---
+
+import TweetEmbed from 'react-tweet-embed'
+
+Today was not a great success so tomorrow's gonna be part two.
+
+We explored Uber's suite of WebGL-based data visualization libraries from [vis.gl](http://vis.gl/). There's a couple:
+
+1. `deck.gl` is for layering data visualization layers on top of maps
+2. `luma.gl` is the base library that everything else uses
+3. `react-map-gl` is a React-based base layer for maps, you then use deck.gl to add layers
+4. `react-vis` is Uber's take on the "react abstraction for charts" class of libraries. Renders to SVG
+
+Trying out [luma.gl](https://luma.gl/) seemed like the best way to get started. It powers everything else and if we're gonna build custom stuff ... well.
+
+Implementing this example of wandering triangles seemed like a good idea.
+
+<iframe
+  src="https://luma.gl/#/examples/core-examples/transform-webgl-2"
+  width="100%"
+  height="500"
+/>
+
+Copy pasting a bunch of code and trying to understand what it does even better.
+
+So we built a React harness, spelunked through the demo code, and learned a few things about WebGL.
+
+```javascript
+<LumaFragment component="canvas" />
+```
+
+`<LumaFragment>` is a [d3blackbox](https://d3blackbox.com) component. It creates a canvas element and lets our render function take over. Our function is mostly a copy paste job.
+
+In this we learned that WebGL renders onto `<canvas>`. Somehow I never realized that before.
+
+We create LumaFragment like this:
+
+```javascript
+const LumaFragment = d3blackbox((anchor, props) => {
+    // copy pasta code from official example
+
+    animationLoop.start({ canvas: anchor.current });
+}
+```
+
+The official example creates an `animationLoop` based on the `AnimationLoop` import from luma.gl. It works like a game loop approach I believe.
+
+There's 3 event callbacks the code hooks into:
+
+1. `onInitialize`, which initializes objects and sets up the visualization
+2. `onRender`, which runs on every loop of the animation. I think
+3. `onFinalize`, which runs when the animation runs out, but it looks like that's never
+
+I'd explain the code inside those callbacks here, if I understood it well enough. Right now it still looks a little alien and hard to grok.
+
+What I _can_ tell you, however, it's that it is designed to run fast. There's a lot of low level stuff creeping in. Like using `Float32Array` instead of just Array because it's typed.
+
+Yes, some JavaScript is typed didn't you know?
+
+And it uses a lot of Buffers. Those are low level memory blocks with direct access from the GPU. Makes it faster than working with higher level JavaScript abstractions.
+
+Another trick for more speed is that much of the hard logic happens in shaders.
+
+We put our shaders in the `shaders.js` file. Shaders are low-level GPU code, originally named after shading effects, but doing all sorts of stuff these days.
+
+Our example uses 3 shaders: `EMIT_VS`, `DRAW_VS`, `DRAW_FS`. They seem to control how our triangles render and behave, but I haven't been able to figure out how the JavaScript part ties together with the shaders part.
+
+Guess that's our next step.
+
+Also figuring out why this happens:
+
+Join me tomorrow. We'll have fun :)
+
+<TweetEmbed id="1075059774708953088" options={{ conversation: 'none' }} />
